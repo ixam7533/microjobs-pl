@@ -1,0 +1,275 @@
+.ratingsContainer {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background: var(--background);
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.ratingsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid var(--border);
+}
+
+.ratingsHeader h3 {
+  margin: 0;
+  color: var(--text);
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+
+.averageRating {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.averageStars {
+  display: flex;
+  gap: 0.1rem;
+}
+
+.averageText {
+  color: var(--text);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.noRatings {
+  color: var(--text-muted);
+  font-style: italic;
+  font-size: 0.9rem;
+}
+
+.loadingSpinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.ratingsList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.ratingItem {
+  padding: 1rem;
+  background: var(--card-background);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  transition: all 0.3s ease;
+}
+
+.ratingItem:hover {
+  background: var(--card-background-hover);
+  border-color: var(--primary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.ratingHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.ratingStars {
+  display: flex;
+  gap: 0.1rem;
+}
+
+.star {
+  font-size: 1.2rem;
+  color: var(--text-muted);
+  transition: color 0.3s ease;
+}
+
+.star.filled {
+  color: #FFD700;
+}
+
+.ratingDate {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+
+.ratingComment {
+  margin: 0.5rem 0;
+  padding: 0.75rem;
+  background: var(--background);
+  border-radius: 6px;
+  border-left: 3px solid var(--primary);
+  color: var(--text);
+  font-style: italic;
+  line-height: 1.5;
+}
+
+.ratingMeta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.8rem;
+}
+
+.reviewer {
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.offerTitle {
+  color: var(--primary);
+  font-weight: 500;
+  max-width: 200px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+/* Dark mode support */
+[data-theme="dark"] .ratingsContainer {
+  background: var(--dark-card);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .ratingsHeader {
+  border-bottom-color: var(--dark-border);
+}
+
+[data-theme="dark"] .ratingsHeader h3 {
+  color: var(--dark-text);
+}
+
+[data-theme="dark"] .averageText {
+  color: var(--dark-text);
+}
+
+[data-theme="dark"] .noRatings {
+  color: var(--dark-text-muted);
+}
+
+[data-theme="dark"] .loadingSpinner {
+  color: var(--dark-text-muted);
+}
+
+[data-theme="dark"] .ratingItem {
+  background: var(--dark-background);
+  border-color: var(--dark-border);
+}
+
+[data-theme="dark"] .ratingItem:hover {
+  background: var(--dark-card-hover);
+  border-color: var(--dark-primary);
+}
+
+[data-theme="dark"] .ratingDate {
+  color: var(--dark-text-muted);
+}
+
+[data-theme="dark"] .ratingComment {
+  background: var(--dark-card);
+  border-left-color: var(--dark-primary);
+  color: var(--dark-text);
+}
+
+[data-theme="dark"] .ratingMeta {
+  border-top-color: var(--dark-border);
+}
+
+[data-theme="dark"] .reviewer {
+  color: var(--dark-text-muted);
+}
+
+[data-theme="dark"] .offerTitle {
+  color: var(--dark-primary);
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .ratingsContainer {
+    margin-top: 1rem;
+    padding: 1rem;
+  }
+  
+  .ratingsHeader {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+  
+  .averageRating {
+    align-self: flex-end;
+  }
+  
+  .ratingHeader {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-start;
+  }
+  
+  .ratingMeta {
+    flex-direction: column;
+    gap: 0.25rem;
+    align-items: flex-start;
+  }
+  
+  .offerTitle {
+    max-width: 100%;
+  }
+  
+  .star {
+    font-size: 1rem;
+  }
+}
+
+/* Animation for loading */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.ratingItem {
+  animation: fadeIn 0.3s ease;
+}
+
+/* Hover effects */
+.ratingItem::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, transparent, rgba(var(--primary-rgb), 0.05), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  border-radius: 8px;
+}
+
+.ratingItem:hover::before {
+  opacity: 1;
+}
+
+.ratingItem {
+  position: relative;
+  overflow: hidden;
+}

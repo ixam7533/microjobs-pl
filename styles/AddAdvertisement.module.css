@@ -1,0 +1,274 @@
+/* Główny wrapper strony */
+.pageWrapper {
+  position: relative;
+  min-height: 100vh;
+  background: var(--bg-color);
+  overflow-x: hidden;
+  padding-bottom: 2rem; /* Dodanie przestrzeni na dole */
+}
+
+/* Kontener tła */
+.bgContainer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -2;
+}
+
+/* Overlay tła */
+.bgTint {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: var(--main-overlay);
+  z-index: -1;
+}
+
+/* Pełnoekranowe wideo */
+.bgVideo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Tło dla nocnego motywu - błękit do granatu */
+.nightBackground {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, 
+    #0f172a 0%,     /* bardzo ciemny granat */
+    #1e293b 15%,    /* ciemny granat */
+    #334155 30%,    /* granat */
+    #475569 50%,    /* jasny granat */
+    #1e40af 70%,    /* niebieski akcent */
+    #1d4ed8 85%,    /* błękit */
+    #2563eb 100%    /* powrót do błękitu */
+  );
+  background-size: 300% 300%;
+  animation: nightGradient 12s ease infinite;
+}
+
+/* Tło dla motywu natury - piękne zdjęcie z animacją zoom */
+.naturaBackground {
+  width: 100%;
+  height: 100%;
+  background-image: url('/house4k.jpg');
+  background-size: 105%; /* Lekko powiększone dla efektu zoom */
+  background-position: center;
+  background-repeat: no-repeat;
+  animation: naturaZoom 45s ease-in-out infinite;
+}
+
+@keyframes naturaZoom {
+  0% { 
+    background-size: 105%;
+    background-position: center center;
+  }
+  25% { 
+    background-size: 108%;
+    background-position: 45% 55%;
+  }
+  50% { 
+    background-size: 106%;
+    background-position: 55% 45%;
+  }
+  75% { 
+    background-size: 109%;
+    background-position: 40% 60%;
+  }
+  100% { 
+    background-size: 105%;
+    background-position: center center;
+  }
+}
+
+/* Tło dla jasnego motywu - elegancki gradient błękit/biały */
+.lightBackground {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, 
+    #e3f2fd 0%,     /* bardzo jasny błękit */
+    #f0f8ff 20%,    /* alice blue */
+    #ffffff 40%,    /* czysty biały */
+    #f8f9fa 60%,    /* bardzo jasny szary */
+    #e8f4fd 80%,    /* jasny błękit */
+    #dbeafe 100%    /* baby blue */
+  );
+  /* Dodanie subtelnego wzoru dla tekstury */
+  background-image: 
+    radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.8) 0%, transparent 50%),
+    radial-gradient(circle at 40% 80%, rgba(59, 130, 246, 0.05) 0%, transparent 50%);
+}
+
+@keyframes nightGradient {
+  0% { background-position: 0% 50%; }
+  25% { background-position: 100% 25%; }
+  50% { background-position: 100% 75%; }
+  75% { background-position: 0% 75%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Przycisk powrotu */
+.backWrapper {
+  text-align: center;
+  margin: 1rem 0;
+}
+.backButton {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  background: var(--card-bg);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  text-decoration: none;
+  transition: all 0.2s;
+  backdrop-filter: blur(8px);
+}
+.backButton:hover {
+  background: var(--form-bg);
+}
+
+/* Kontener formularza */
+.formContainer {
+  position: relative;
+  max-width: 600px;
+  margin: 3rem auto;
+  padding: 2rem;
+  background: var(--form-bg);
+  backdrop-filter: blur(12px);
+  border-radius: 16px;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+  color: var(--text-color);
+}
+
+/* Nagłówek */
+.formContainer h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-size: 1.75rem;
+  color: var(--text-color);
+}
+
+/* Pojedyncze pole */
+.field {
+  margin-bottom: 1rem;
+}
+.field label {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-weight: 500;
+  color: var(--text-color);
+}
+.field input[type="text"],
+.field input[type="email"],
+.field select,
+.field textarea {
+  width: 100%;
+  padding: 0.75rem;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  color: var(--text-color);
+  font-size: 1rem;
+}
+
+.field input[type="text"]::placeholder,
+.field input[type="email"]::placeholder,
+.field textarea::placeholder {
+  color: var(--text-color);
+  opacity: 0.6;
+}
+.field textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+/* Liczniki znaków */
+.counter {
+  font-size: 0.85rem;
+  color: var(--text-color);
+  opacity: 0.7;
+  text-align: right;
+}
+
+/* Drag&drop i podglądy */
+.uploadArea {
+  padding: 1rem;
+  border: 2px dashed var(--border-color);
+  border-radius: 8px;
+  text-align: center;
+  cursor: pointer;
+  color: var(--text-color);
+  transition: all 0.2s ease;
+}
+.uploadArea:hover {
+  background: var(--card-bg);
+  border-color: var(--text-color);
+}
+.previews {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+.previews img {
+  width: 80px; height: 80px;
+  object-fit: cover;
+  border-radius: 8px;
+  cursor: grab;
+}
+.previews img.dragging {
+  opacity: 0.5;
+}
+
+/* Inline checkbox */
+.inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Akcje przycisków */
+.actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.btn {
+  flex: 1;
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 9999px;
+  background: rgba(255,255,255,0.25);
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.btn:hover:not(:disabled) {
+  background: rgba(255,255,255,0.35);
+  transform: translateY(-2px);
+}
+
+/* Modal podglądu */
+.ReactModal__Overlay {
+  background: rgba(0,0,0,0.75) !important;
+}
+.modalContent {
+  background: #222;
+  padding: 2rem;
+  border-radius: 12px;
+  color: #fff;
+  max-width: 500px;
+  margin: auto;
+}

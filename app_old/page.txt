@@ -1,0 +1,19 @@
+// app/page.tsx
+import Header from '../components/Header';
+import Hero from '../components/Hero';
+import OffersSection from '../components/OffersSection';  // <— sprawdź tę ścieżkę!
+import Footer from '../components/Footer';
+
+export default function Page() {
+  return (
+    <>
+      <Header />
+      <Hero />
+
+      {/* Tu musi być OffersSection */}
+      <OffersSection />
+
+      <Footer />
+    </>
+  );
+}

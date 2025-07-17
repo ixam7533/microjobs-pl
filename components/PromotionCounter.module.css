@@ -1,0 +1,97 @@
+/* PromotionCounter.module.css */
+.promotionCounter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.counterBadge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: white;
+  padding: 8px 12px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+}
+
+.counterBadge:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.counterIcon {
+  font-size: 1rem;
+}
+
+.counterText {
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.counterLabel {
+  font-size: 0.8rem;
+  opacity: 0.9;
+}
+
+.subscriptionBadge {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: var(--text-primary);
+  padding: 6px 10px;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Dark Mode */
+[data-theme="dark"] .subscriptionBadge {
+  background: rgba(0, 0, 0, 0.3);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: var(--dark-text);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .counterBadge {
+    padding: 6px 10px;
+    font-size: 0.8rem;
+  }
+  
+  .counterLabel {
+    display: none;
+  }
+  
+  .subscriptionBadge {
+    padding: 4px 8px;
+    font-size: 0.7rem;
+  }
+}
+
+/* Animation */
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.counterBadge {
+  animation: pulse 2s infinite;
+}
+
+/* Accessibility */
+.counterBadge:focus {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.counterBadge:focus:not(:focus-visible) {
+  outline: none;
+}

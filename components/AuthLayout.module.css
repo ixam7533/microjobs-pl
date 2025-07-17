@@ -1,0 +1,111 @@
+
+.wrapper {
+  position: relative;
+  min-height: 100vh;
+  background: var(--bg-color);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* wideo + maska */
+.overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+.video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Tło dla nocnego motywu - błękit do granatu */
+.nightBackground {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, 
+    #0f172a 0%,     /* bardzo ciemny granat */
+    #1e293b 15%,    /* ciemny granat */
+    #334155 30%,    /* granat */
+    #475569 50%,    /* jasny granat */
+    #1e40af 70%,    /* niebieski akcent */
+    #1d4ed8 85%,    /* błękit */
+    #2563eb 100%    /* powrót do błękitu */
+  );
+  background-size: 300% 300%;
+  animation: nightGradient 12s ease infinite;
+}
+
+/* Tło dla jasnego motywu - piękny gradient błękit → granat */
+.lightBackground {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, 
+    #e0f2fe 0%,     /* bardzo jasny błękit */
+    #b3e5fc 15%,    /* jasny błękit */
+    #81d4fa 30%,    /* błękit */
+    #4fc3f7 45%,    /* średni błękit */
+    #29b6f6 60%,    /* niebieski */
+    #0288d1 75%,    /* ciemny niebieski */
+    #0277bd 90%,    /* granat */
+    #01579b 100%    /* ciemny granat */
+  );
+  background-size: 300% 300%;
+  animation: lightGradient 15s ease infinite;
+}
+
+@keyframes lightGradient {
+  0% { background-position: 0% 50%; }
+  25% { background-position: 100% 30%; }
+  50% { background-position: 100% 70%; }
+  75% { background-position: 0% 70%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes nightGradient {
+  0% { background-position: 0% 50%; }
+  25% { background-position: 100% 25%; }
+  50% { background-position: 100% 75%; }
+  75% { background-position: 0% 75%; }
+  100% { background-position: 0% 50%; }
+}
+
+.tint {
+  position: absolute;
+  inset: 0;
+  background: var(--main-overlay);
+  z-index: 1;
+}
+
+/* fala u dołu */
+.wave {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 40px;
+  overflow: hidden;
+  z-index: 1;
+}
+.wave svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* szkło wokół formy */
+.formContainer {
+  position: relative;
+  z-index: 2;
+  background: var(--form-bg);
+  backdrop-filter: blur(12px);
+  border-radius: 16px;
+  border: 1px solid var(--border-color);
+  padding: 2.5rem 2rem;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+  color: var(--text-color);
+}

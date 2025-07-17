@@ -1,0 +1,371 @@
+/* styles/Home.module.css */
+
+.page {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-color);
+  color: var(--text-color);
+  overflow: hidden;
+}
+
+.main {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+}
+
+.bgContainer {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+.bgVideo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Tło dla nocnego motywu - błękit do granatu */
+.nightBackground {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, 
+    #0f172a 0%,     /* bardzo ciemny granat */
+    #1e293b 15%,    /* ciemny granat */
+    #334155 30%,    /* granat */
+    #475569 50%,    /* jasny granat */
+    #1e40af 70%,    /* niebieski akcent */
+    #1d4ed8 85%,    /* błękit */
+    #2563eb 100%    /* powrót do błękitu */
+  );
+  background-size: 300% 300%;
+  animation: nightGradient 12s ease infinite;
+}
+
+/* Tło dla motywu natury - piękne zdjęcie z animacją zoom */
+.naturaBackground {
+  width: 100%;
+  height: 100%;
+  background-image: url('/house4k.jpg');
+  background-size: 105%; /* Lekko powiększone dla efektu zoom */
+  background-position: center;
+  background-repeat: no-repeat;
+  animation: naturaZoom 45s ease-in-out infinite;
+}
+
+@keyframes naturaZoom {
+  0% { 
+    background-size: 105%;
+    background-position: center center;
+  }
+  25% { 
+    background-size: 108%;
+    background-position: 45% 55%;
+  }
+  50% { 
+    background-size: 106%;
+    background-position: 55% 45%;
+  }
+  75% { 
+    background-size: 109%;
+    background-position: 40% 60%;
+  }
+  100% { 
+    background-size: 105%;
+    background-position: center center;
+  }
+}
+
+/* Tło dla jasnego motywu - elegancki gradient błękit/biały */
+.lightBackground {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, 
+    #e3f2fd 0%,     /* bardzo jasny błękit */
+    #f0f8ff 20%,    /* alice blue */
+    #ffffff 40%,    /* czysty biały */
+    #f8f9fa 60%,    /* bardzo jasny szary */
+    #e8f4fd 80%,    /* jasny błękit */
+    #dbeafe 100%    /* baby blue */
+  );
+  /* Dodanie subtelnego wzoru dla tekstury */
+  background-image: 
+    radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.8) 0%, transparent 50%),
+    radial-gradient(circle at 40% 80%, rgba(59, 130, 246, 0.05) 0%, transparent 50%);
+}
+
+@keyframes nightGradient {
+  0% { background-position: 0% 50%; }
+  25% { background-position: 100% 25%; }
+  50% { background-position: 100% 75%; }
+  75% { background-position: 0% 75%; }
+  100% { background-position: 0% 50%; }
+}
+
+.bgTint {
+  position: absolute;
+  inset: 0;
+  background: var(--main-overlay);
+}
+
+.grid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 250px 1fr 200px;
+  gap: 1.5rem;
+  padding: 2rem;
+  width: calc(100% - 4rem);
+  height: calc(100% - 4rem);
+  box-sizing: border-box;
+}
+
+.sidebar {
+  background: var(--card-bg);
+  backdrop-filter: blur(6px);
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  padding: 1.5rem;
+  padding: 1rem;
+  color: #fff;
+}
+.sidebar h3 {
+  margin-top: 0;
+}
+.sidebar label {
+  display: block;
+  margin-bottom: 1rem;
+}
+.sidebar input,
+.sidebar select {
+  width: 100%;
+  margin-top: 0.25rem;
+  padding: 0.5rem;
+  border: none;
+  border-radius: 6px;
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+}
+
+.offers {
+  overflow-y: auto;
+}
+
+.ad {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+.adBox {
+  background: rgba(128,128,128,0.2);
+  backdrop-filter: blur(6px);
+  border-radius: 8px;
+  padding: 1rem;
+  color: #fff;
+}
+
+/* custom scrollbars */
+.offers,
+.sidebar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.3) transparent;
+}
+.offers::-webkit-scrollbar,
+.sidebar::-webkit-scrollbar {
+  width: 8px;
+}
+.offers::-webkit-scrollbar-thumb,
+.sidebar::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.3);
+  border-radius: 4px;
+}
+
+/* Grupy filtrów */
+.filterGroup {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.filterGroup h4 {
+  margin: 0 0 0.75rem 0;
+  font-size: 0.9rem;
+  color: var(--text-color);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.filterGroup label {
+  display: block;
+  margin-bottom: 0.75rem;
+}
+
+.filterGroup label:last-child {
+  margin-bottom: 0;
+}
+
+.filterGroup label span {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 500;
+}
+
+.filterGroup input,
+.filterGroup select {
+  width: 100%;
+  padding: 0.6rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-color);
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.filterGroup input:focus,
+.filterGroup select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(131, 96, 195, 0.2);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.filterGroup input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* Zakres cen */
+.priceRange {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.priceRange label span {
+  font-size: 0.75rem;
+}
+
+/* Przycisk resetowania */
+.resetButton {
+  width: 100%;
+  padding: 0.75rem;
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.resetButton:hover {
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+}
+
+.resetButton:active {
+  transform: translateY(0);
+}
+
+/* Filtry typu oferty */
+.jobTypeFilter {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  align-items: center;
+  margin: 1rem 0;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  flex-wrap: wrap;
+}
+
+.jobTypeButton {
+  padding: 0.5rem 1rem;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-color);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+  font-weight: 500;
+  backdrop-filter: blur(5px);
+  white-space: nowrap;
+}
+
+.jobTypeButton:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-2px);
+}
+
+.jobTypeButton.active {
+  background: rgba(59, 130, 246, 0.8);
+  border-color: rgba(59, 130, 246, 1);
+  color: white;
+  box-shadow: 0 2px 10px rgba(59, 130, 246, 0.3);
+}
+
+.jobTypeButton:active {
+  transform: translateY(0);
+}
+
+/* Responsywność */
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr auto;
+    gap: 1rem;
+    padding: 1rem;
+    height: auto;
+  }
+  
+  .sidebar {
+    order: 1;
+    max-height: 300px;
+    overflow-y: auto;
+  }
+  
+  .offers {
+    order: 2;
+    max-height: 60vh;
+  }
+  
+  .ad {
+    order: 3;
+  }
+  
+  .priceRange {
+    grid-template-columns: 1fr;
+  }
+  
+  .jobTypeFilter {
+    margin: 0.5rem 0;
+    padding: 0.5rem;
+    gap: 0.3rem;
+  }
+  
+  .jobTypeButton {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+  }
+}

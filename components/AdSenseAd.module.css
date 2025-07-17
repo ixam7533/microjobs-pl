@@ -1,0 +1,111 @@
+/* components/AdSenseAd.module.css */
+.adContainer {
+  margin: 20px 0;
+  padding: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  text-align: center;
+}
+
+.adContainer.sidebar {
+  max-width: 300px;
+  margin: 10px 0;
+}
+
+.adContainer.banner {
+  width: 100%;
+  max-width: 728px;
+  margin: 20px auto;
+  min-height: 90px;
+}
+
+.adContainer.square {
+  width: 300px;
+  height: 250px;
+  margin: 15px auto;
+}
+
+.adContainer.offer {
+  width: 100%;
+  max-width: 468px;
+  margin: 15px auto;
+  min-height: 60px;
+}
+
+.adContainer.bottom {
+  width: 100%;
+  max-width: 970px;
+  margin: 30px auto;
+  min-height: 90px;
+}
+
+.adLabel {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.5);
+  text-align: center;
+  margin-bottom: 5px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Dark mode adjustments */
+[data-theme="dark"] .adContainer {
+  border-color: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* Light mode adjustments */
+[data-theme="light"] .adContainer {
+  border-color: rgba(0, 0, 0, 0.1);
+  background: rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="light"] .adLabel {
+  color: rgba(0, 0, 0, 0.5);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .adContainer.banner {
+    max-width: 320px;
+    min-height: 50px;
+  }
+  
+  .adContainer.square {
+    width: 280px;
+    height: 200px;
+  }
+  
+  .adContainer.bottom {
+    max-width: 320px;
+    min-height: 50px;
+  }
+}
+
+/* Loading placeholder */
+.adContainer.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.adContainer.loading::before {
+  content: "Ładowanie reklamy...";
+  font-size: 12px;
+}
+
+/* AdSense specific styles */
+.adContainer .adsbygoogle {
+  width: 100%;
+  height: 100%;
+}
+
+/* Hide ads on small screens if needed */
+@media (max-width: 480px) {
+  .adContainer.sidebar {
+    display: none;
+  }
+}

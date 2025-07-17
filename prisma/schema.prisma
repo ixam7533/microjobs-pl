@@ -1,0 +1,194 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               Int               @id @default(autoincrement())
+  email            String            @unique
+  hash             String?           // Opcjonalne dla OAuth
+  confirmed        Boolean           @default(false)
+  confirmToken     String?           // Token potwierdzenia email
+  createdAt        DateTime          @default(now())
+  chatParticipants ChatParticipant[]
+  favorites        Favorite[]
+  messages         Message[]         @relation("MessageSender")
+  offers           Offer[]
+  
+  // Next-Auth fields
+  name             String?
+  image            String?
+  emailVerified    DateTime?
+  accounts         Account[]
+  sessions         Session[]
+  
+  // Rating system
+  reviewsGiven     Rating[]          @relation("ReviewsGiven")
+  reviewsReceived  Rating[]          @relation("ReviewsReceived")
+  
+  // Subscription fields
+  subscriptionType String?           // "PRO" lub "PRO_PLUS"
+  subscriptionStart DateTime?
+  subscriptionEnd  DateTime?
+  promotionsUsed   Int               @default(0)
+  promotionsLimit  Int               @default(0)
+  subscriptionId   String?           // ID subskrypcji z systemu płatności
+  emailReminder    Boolean           @default(true)
+  subscriptions    Subscription[]
+  promotionUsages  PromotionUsage[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            Int
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       Int
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Chat {
+  id           Int               @id @default(autoincrement())
+  createdAt    DateTime          @default(now())
+  participants ChatParticipant[]
+  messages     Message[]
+}
+
+model ChatParticipant {
+  chatId   Int
+  userId   Int
+  joinedAt DateTime @default(now())
+  user     User     @relation(fields: [userId], references: [id])
+  chat     Chat     @relation(fields: [chatId], references: [id])
+
+  @@id([chatId, userId])
+}
+
+model Message {
+  id         Int      @id @default(autoincrement())
+  content    String
+  chatId     Int
+  senderId   Int
+  receiverId Int?     // Dodane pole receiverId
+  createdAt  DateTime @default(now())
+  sender     User     @relation("MessageSender", fields: [senderId], references: [id])
+  chat       Chat     @relation(fields: [chatId], references: [id])
+}
+
+model Offer {
+  id           Int          @id @default(autoincrement())
+  title        String
+  category     String
+  description  String
+  autorenew    Boolean      @default(true)
+  location     String
+  contactName  String
+  contactEmail String
+  contactPhone String?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  price        Float?       @default(0)
+  offerType    String       @default("szukam_pracownika") // "szukam_pracy" lub "szukam_pracownika"
+  favorites    Favorite[]
+  owner        User         @relation(fields: [ownerId], references: [id])
+  images       OfferImage[]
+  ratings      Rating[]     // Oceny związane z ofertą
+  promoted     Boolean      @default(false)
+  promotedUntil DateTime?
+  promotionUsages PromotionUsage[]
+  ownerId      Int
+}
+
+model OfferImage {
+  id      Int    @id @default(autoincrement())
+  url     String
+  offerId Int
+  offer   Offer  @relation(fields: [offerId], references: [id])
+}
+
+model Favorite {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  offerId   Int
+  createdAt DateTime @default(now())
+  offer     Offer    @relation(fields: [offerId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@unique([userId, offerId])
+}
+
+model Rating {
+  id          Int      @id @default(autoincrement())
+  rating      Int      // 1-5 stars
+  comment     String?
+  createdAt   DateTime @default(now())
+  
+  // Kto ocenia
+  reviewerId  Int
+  reviewer    User     @relation("ReviewsGiven", fields: [reviewerId], references: [id])
+  
+  // Kto jest oceniany
+  reviewedId  Int
+  reviewed    User     @relation("ReviewsReceived", fields: [reviewedId], references: [id])
+  
+  // Powiązanie z ofertą (opcjonalne)
+  offerId     Int?
+  offer       Offer?   @relation(fields: [offerId], references: [id])
+  
+  @@unique([reviewerId, reviewedId, offerId])
+}
+
+model Subscription {
+  id            String    @id @default(cuid())
+  userId        Int
+  type          String    // "PRO" lub "PRO_PLUS"
+  status        String    // "ACTIVE", "CANCELLED", "EXPIRED"
+  startDate     DateTime
+  endDate       DateTime
+  autoRenew     Boolean   @default(true)
+  paymentId     String?   // ID płatności
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model PromotionUsage {
+  id        String    @id @default(cuid())
+  userId    Int
+  offerId   Int
+  usedAt    DateTime  @default(now())
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  offer Offer @relation(fields: [offerId], references: [id], onDelete: Cascade)
+}

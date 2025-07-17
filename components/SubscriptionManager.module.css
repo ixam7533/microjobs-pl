@@ -1,0 +1,372 @@
+/* SubscriptionManager.module.css */
+.subscriptionManager {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.subscriptionManager h2 {
+  color: var(--text-primary);
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+}
+
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  color: var(--text-secondary);
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--border-color);
+  border-top: 3px solid var(--primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 10px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Active Subscription */
+.activeSubscription {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.subscriptionHeader {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.subscriptionBadge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: white;
+  padding: 12px 20px;
+  border-radius: 25px;
+  font-weight: 600;
+  font-size: 1.1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.badgeIcon {
+  font-size: 1.2rem;
+}
+
+.subscriptionInfo {
+  flex: 1;
+}
+
+.subscriptionInfo p {
+  margin: 4px 0;
+  color: var(--text-primary);
+}
+
+.daysRemaining {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+/* Promotions Counter */
+.promotionsCounter {
+  margin-bottom: 24px;
+}
+
+.promotionsCounter h3 {
+  color: var(--text-primary);
+  margin-bottom: 16px;
+  font-size: 1.2rem;
+}
+
+.counterDisplay {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.counterValue {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 1.1rem;
+  min-width: 60px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.counterLabel {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.promotionProgress {
+  width: 100%;
+  height: 8px;
+  background: var(--border-color);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progressBar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+  transition: width 0.3s ease;
+}
+
+/* Subscription Actions */
+.subscriptionActions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.cancelButton {
+  background: transparent;
+  border: 2px solid #dc2626;
+  color: #dc2626;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.cancelButton:hover {
+  background: #dc2626;
+  color: white;
+  transform: translateY(-2px);
+}
+
+.cancelButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* No Subscription */
+.noSubscription {
+  text-align: center;
+  padding: 20px;
+}
+
+.noSubscription p {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  margin-bottom: 30px;
+}
+
+.pricingCards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+  margin-top: 20px;
+}
+
+.pricingCard {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 24px;
+  text-align: center;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.pricingCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  border-color: var(--primary);
+}
+
+.pricingCard h3 {
+  color: var(--text-primary);
+  margin-bottom: 16px;
+  font-size: 1.3rem;
+}
+
+.price {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.priceAmount {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.priceCurrency {
+  font-size: 1.2rem;
+  color: var(--primary);
+  margin-left: 4px;
+}
+
+.pricePeriod {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-left: 4px;
+}
+
+.featureList {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 24px 0;
+  text-align: left;
+}
+
+.featureList li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+}
+
+.checkmark {
+  color: #10b981;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.purchaseButton {
+  width: 100%;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: white;
+  border: none;
+  padding: 14px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.purchaseButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+.purchaseButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.purchaseButton:active {
+  transform: translateY(0);
+}
+
+/* Dark Mode */
+[data-theme="dark"] .activeSubscription {
+  background: var(--dark-card);
+  border-color: var(--dark-border);
+}
+
+[data-theme="dark"] .pricingCard {
+  background: var(--dark-card);
+  border-color: var(--dark-border);
+}
+
+[data-theme="dark"] .promotionProgress {
+  background: var(--dark-border);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .subscriptionManager {
+    padding: 16px;
+  }
+  
+  .subscriptionHeader {
+    flex-direction: column;
+    text-align: center;
+    gap: 16px;
+  }
+  
+  .pricingCards {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .pricingCard {
+    padding: 20px;
+  }
+  
+  .counterDisplay {
+    justify-content: center;
+  }
+  
+  .subscriptionActions {
+    justify-content: center;
+  }
+}
+
+/* Accessibility */
+.purchaseButton:focus,
+.cancelButton:focus {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.purchaseButton:focus:not(:focus-visible),
+.cancelButton:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Animation for counter */
+@keyframes countUp {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.counterValue {
+  animation: countUp 0.3s ease-out;
+}
+
+/* Enhanced hover effects */
+.pricingCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transition: left 0.5s ease;
+}
+
+.pricingCard:hover::before {
+  left: 100%;
+}

@@ -1,0 +1,342 @@
+/* styles/Pro.module.css */
+.page {
+  position: relative;
+  min-height: 100vh;
+  background: var(--bg-color);
+  color: var(--text-color);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.main {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* Tło wideo */
+.bgContainer {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.bgVideo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.bgTint {
+  position: absolute;
+  inset: 0;
+  background: var(--main-overlay);
+}
+
+/* Tło dla nocnego motywu */
+.nightBackground {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, 
+    #0f172a 0%,
+    #1e293b 15%,
+    #334155 30%,
+    #475569 50%,
+    #1e40af 70%,
+    #1d4ed8 85%,
+    #2563eb 100%
+  );
+  background-size: 300% 300%;
+  animation: nightGradient 12s ease infinite;
+}
+
+/* Tło dla motywu natura */
+.naturaBackground {
+  width: 100%;
+  height: 100%;
+  background: url('/house4k.jpg') center/cover;
+  animation: naturaZoom 20s ease-in-out infinite;
+}
+
+@keyframes nightGradient {
+  0% { background-position: 0% 50%; }
+  25% { background-position: 100% 25%; }
+  50% { background-position: 100% 75%; }
+  75% { background-position: 0% 75%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes naturaZoom {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+/* Zawartość strony */
+.content {
+  position: relative;
+  z-index: 1;
+  padding: 2rem 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.hero {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.hero h1 {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  background: linear-gradient(135deg, #3b82f6, #10b981);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero p {
+  font-size: 1.25rem;
+  color: var(--text-secondary);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Plany */
+.plansGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-bottom: 4rem;
+}
+
+.planCard {
+  background: var(--card-bg);
+  border: 2px solid var(--border-color);
+  border-radius: 16px;
+  padding: 2rem;
+  position: relative;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.planCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.featured {
+  border-color: var(--color-primary);
+  background: linear-gradient(135deg, 
+    rgba(59, 130, 246, 0.1) 0%, 
+    rgba(16, 185, 129, 0.1) 100%
+  );
+}
+
+.featuredBadge {
+  position: absolute;
+  top: -10px;
+  right: 20px;
+  background: linear-gradient(135deg, #3b82f6, #10b981);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.planHeader {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.planHeader h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: var(--text-color);
+}
+
+.planPrice {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.price {
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.period {
+  font-size: 1rem;
+  color: var(--text-secondary);
+}
+
+.planFeatures {
+  margin-bottom: 2rem;
+}
+
+.feature {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  color: var(--text-color);
+}
+
+.featureIcon {
+  width: 20px;
+  height: 20px;
+  background: var(--color-primary);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.planButton {
+  width: 100%;
+  padding: 1rem;
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.planButton:hover {
+  background: #2563eb;
+  transform: translateY(-2px);
+}
+
+.featuredButton {
+  background: linear-gradient(135deg, #3b82f6, #10b981);
+}
+
+.featuredButton:hover {
+  background: linear-gradient(135deg, #2563eb, #059669);
+}
+
+/* Porównanie */
+.comparison {
+  margin-bottom: 4rem;
+}
+
+.comparison h2 {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  color: var(--text-color);
+}
+
+.comparisonTable {
+  background: var(--card-bg);
+  border: 2px solid var(--border-color);
+  border-radius: 16px;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+}
+
+.comparisonRow {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.comparisonRow:last-child {
+  border-bottom: none;
+}
+
+.comparisonFeature {
+  font-weight: 500;
+  color: var(--text-color);
+}
+
+.comparisonPro,
+.comparisonProPlus {
+  text-align: center;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.comparisonPro {
+  color: var(--color-primary);
+}
+
+.comparisonProPlus {
+  color: #10b981;
+}
+
+/* FAQ */
+.faq h2 {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  color: var(--text-color);
+}
+
+.faqItem {
+  background: var(--card-bg);
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  backdrop-filter: blur(10px);
+}
+
+.faqItem h3 {
+  color: var(--text-color);
+  margin-bottom: 0.5rem;
+  font-size: 1.125rem;
+}
+
+.faqItem p {
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .content {
+    padding: 1rem;
+  }
+  
+  .hero h1 {
+    font-size: 2rem;
+  }
+  
+  .hero p {
+    font-size: 1rem;
+  }
+  
+  .plansGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .comparisonRow {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+  
+  .comparisonFeature {
+    font-weight: 600;
+  }
+  
+  .comparisonPro,
+  .comparisonProPlus {
+    text-align: left;
+  }
+}

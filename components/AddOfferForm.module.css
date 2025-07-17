@@ -1,0 +1,567 @@
+/* components/AddOfferForm.module.css */
+.addOfferForm {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+  background: var(--form-bg);
+  border-radius: 16px;
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border-color);
+}
+
+.progress {
+  margin-bottom: 2rem;
+}
+
+.progressBar {
+  width: 100%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+
+.progressFill {
+  height: 100%;
+  background: linear-gradient(90deg, #3b82f6, #10b981);
+  transition: width 0.3s ease;
+  border-radius: 4px;
+}
+
+.progressText {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  text-align: center;
+  display: block;
+}
+
+.step {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.step h2 {
+  color: var(--text-color);
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.subtitle {
+  color: var(--text-secondary);
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-size: 0.875rem;
+}
+
+/* Step 1 - Offer Type Selection */
+.offerTypeGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.offerTypeCard {
+  background: var(--card-bg);
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  padding: 2rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(8px);
+}
+
+.offerTypeCard:hover {
+  transform: translateY(-2px);
+  border-color: var(--color-primary);
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.15);
+}
+
+.offerTypeCard.active {
+  border-color: var(--color-primary);
+  background: rgba(59, 130, 246, 0.1);
+}
+
+.offerTypeIcon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.offerTypeCard h3 {
+  color: var(--text-color);
+  margin-bottom: 0.5rem;
+  font-size: 1.25rem;
+}
+
+.offerTypeCard p {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+/* Step 2 - Category Selection */
+.categoryGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.categoryCard {
+  background: var(--card-bg);
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.5rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(8px);
+}
+
+.categoryCard:hover {
+  transform: translateY(-2px);
+  border-color: var(--color-primary);
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.15);
+}
+
+.categoryCard.active {
+  border-color: var(--color-primary);
+  background: rgba(59, 130, 246, 0.1);
+}
+
+.categoryCard h3 {
+  color: var(--text-color);
+  margin-bottom: 0.5rem;
+  font-size: 1.125rem;
+}
+
+.categoryCard p {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+/* Step 3 - Subcategory Selection */
+.subcategoryGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+
+.subcategoryTag {
+  background: var(--card-bg);
+  border: 2px solid var(--border-color);
+  border-radius: 25px;
+  padding: 0.5rem 1rem;
+  color: var(--text-color);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.875rem;
+}
+
+.subcategoryTag:hover {
+  border-color: var(--color-primary);
+  transform: translateY(-1px);
+}
+
+.subcategoryTag.active {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: white;
+}
+
+/* Step 4 & 5 - Form Fields */
+.formGrid {
+  display: grid;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.formGroup label {
+  color: var(--text-color);
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.formGroup input,
+.formGroup textarea {
+  background: var(--input-bg);
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  padding: 0.75rem;
+  color: var(--text-color);
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.formGroup input:focus,
+.formGroup textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.formGroup textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.fileInput {
+  padding: 0.5rem !important;
+}
+
+/* Step 6 - Promotion & Payment */
+.promoSection {
+  margin-bottom: 2rem;
+}
+
+.promoLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: var(--card-bg);
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+}
+
+.promoLabel:hover {
+  border-color: var(--color-primary);
+}
+
+.promoLabel input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--color-primary);
+}
+
+.pricingSummary {
+  background: var(--card-bg);
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.pricingSummary h3 {
+  color: var(--text-color);
+  margin-bottom: 1rem;
+  font-size: 1.125rem;
+}
+
+.freeOffer {
+  background: linear-gradient(135deg, #10b981, #059669, #047857);
+  color: white;
+  padding: 2rem;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.freeOffer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, rgba(255,255,255,0.1) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.freeOfferIcon {
+  font-size: 3rem;
+  flex-shrink: 0;
+  animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-10px); }
+  60% { transform: translateY(-5px); }
+}
+
+.freeOfferText {
+  flex: 1;
+  text-align: left;
+}
+
+.freeOfferText h4 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.freeOfferText p {
+  margin: 0;
+  font-size: 1rem;
+  opacity: 0.9;
+  line-height: 1.4;
+}
+
+.proUser {
+  background: linear-gradient(135deg, #f59e0b, #d97706, #b45309);
+  color: white;
+  padding: 2rem;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  box-shadow: 0 8px 25px rgba(245, 158, 11, 0.3);
+}
+
+.proUserIcon {
+  font-size: 3rem;
+  flex-shrink: 0;
+}
+
+.proUserText {
+  flex: 1;
+  text-align: left;
+}
+
+.proUserText h4 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.proUserText p {
+  margin: 0;
+  font-size: 0.875rem;
+  opacity: 0.9;
+}
+
+.feeBreakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.feeItem {
+  display: flex;
+  justify-content: space-between;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+.feeTotal {
+  display: flex;
+  justify-content: space-between;
+  color: var(--text-color);
+  font-weight: 600;
+  font-size: 1rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--border-color);
+  margin-top: 0.5rem;
+}
+
+/* Banner informujący o darmowym pierwszym ogłoszeniu */
+.freeOfferBanner {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 8px 25px rgba(16, 185, 129, 0.25);
+  position: relative;
+  overflow: hidden;
+}
+
+.freeOfferBanner::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, rgba(255,255,255,0.1) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.freeOfferBannerIcon {
+  font-size: 2rem;
+  flex-shrink: 0;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+.freeOfferBannerText {
+  flex: 1;
+  text-align: left;
+}
+
+.freeOfferBannerText strong {
+  display: block;
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.freeOfferBannerText p {
+  margin: 0;
+  font-size: 0.95rem;
+  opacity: 0.9;
+  line-height: 1.3;
+}
+
+/* Step Navigation */
+.stepButtons {
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  margin-top: 2rem;
+}
+
+.nextBtn,
+.backBtn,
+.submitBtn {
+  padding: 0.75rem 2rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+}
+
+.nextBtn,
+.submitBtn {
+  background: var(--color-primary);
+  color: white;
+}
+
+.nextBtn:hover,
+.submitBtn:hover {
+  background: #2563eb;
+  transform: translateY(-1px);
+}
+
+.nextBtn:disabled,
+.submitBtn:disabled {
+  background: var(--text-secondary);
+  cursor: not-allowed;
+  transform: none;
+}
+
+.backBtn {
+  background: var(--card-bg);
+  color: var(--text-color);
+  border: 2px solid var(--border-color);
+}
+
+.backBtn:hover {
+  border-color: var(--color-primary);
+  transform: translateY(-1px);
+}
+
+.submitBtn {
+  background: linear-gradient(90deg, #10b981, #059669);
+  min-width: 200px;
+}
+
+.submitBtn:hover {
+  background: linear-gradient(90deg, #059669, #047857);
+}
+
+/* Location section styles */
+.locationSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.locationRow {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-end;
+}
+
+.locationField {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.locationField label {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.locationField select,
+.locationField input {
+  padding: 0.75rem;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--input-bg);
+  color: var(--text-color);
+  font-size: 0.875rem;
+}
+
+.locationField select:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.locationPreview {
+  padding: 0.75rem;
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 8px;
+  font-size: 0.875rem;
+  color: var(--text-color);
+  margin-top: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .addOfferForm {
+    padding: 1rem;
+  }
+  
+  .offerTypeGrid,
+  .categoryGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .stepButtons {
+    flex-direction: column;
+  }
+  
+  .stepButtons .backBtn {
+    order: 2;
+  }
+  
+  .locationRow {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}

@@ -1,0 +1,187 @@
+/* components/Header.module.css */
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  overflow: hidden;
+}
+.inner {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start; /* wszystkie elementy od lewej */
+}
+
+.switch {
+  margin-right: 1rem; /* odsunięcie od logo */
+}
+
+
+/* 1. pełnoekranowe wideo + fioletowy tint */
+.overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+.video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Tło dla nocnego motywu - błękit do granatu */
+.nightBackground {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, 
+    #0f172a 0%,     /* bardzo ciemny granat */
+    #1e293b 15%,    /* ciemny granat */
+    #334155 30%,    /* granat */
+    #475569 50%,    /* jasny granat */
+    #1e40af 70%,    /* niebieski akcent */
+    #1d4ed8 85%,    /* błękit */
+    #2563eb 100%    /* powrót do błękitu */
+  );
+  background-size: 300% 300%;
+  animation: nightGradient 12s ease infinite;
+}
+
+/* Tło dla jasnego motywu - piękny gradient błękit → granat */
+.lightBackground {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, 
+    #e0f2fe 0%,     /* bardzo jasny błękit */
+    #b3e5fc 15%,    /* jasny błękit */
+    #81d4fa 30%,    /* błękit */
+    #4fc3f7 45%,    /* średni błękit */
+    #29b6f6 60%,    /* niebieski */
+    #0288d1 75%,    /* ciemny niebieski */
+    #0277bd 90%,    /* granat */
+    #01579b 100%    /* ciemny granat */
+  );
+  background-size: 300% 300%;
+  animation: lightGradient 15s ease infinite;
+}
+
+@keyframes lightGradient {
+  0% { background-position: 0% 50%; }
+  25% { background-position: 100% 30%; }
+  50% { background-position: 100% 70%; }
+  75% { background-position: 0% 70%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes nightGradient {
+  0% { background-position: 0% 50%; }
+  25% { background-position: 100% 25%; }
+  50% { background-position: 100% 75%; }
+  75% { background-position: 0% 75%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* ciemniejszy, półprzezroczysty overlay - różny dla każdego motywu */
+.tint {
+  position: absolute;
+  inset: 0;
+  background: var(--header-overlay);
+}
+
+/* 2. Pasek top – teraz transparentny i węższy */
+.top {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 1rem;     /* zmniejszony padding */
+  background: transparent;  /* usuń tło – widoczny tint z .overlay */
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #fff;
+  text-decoration: none;
+}
+
+.nav {
+  display: flex;
+  /*align-items: center;*/
+  margin-left: auto;
+  gap: 0.75rem;
+}
+
+.btn {
+  padding: 0.4rem 0.8rem;    /* nieco mniejsze przyciski */
+  background: var(--color-primary);
+  color: #fff;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+.btn:hover {
+  background: #6b43a1;
+}
+
+.proBtn {
+  padding: 0.4rem 0.8rem;
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #fff;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: all 0.2s;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+}
+
+.proBtn:hover {
+  background: linear-gradient(135deg, #d97706, #b45309);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+}
+
+.userMenu {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.email {
+  color: #fff;
+  font-size: 0.85rem;
+}
+
+/* 3. Krótki hero – nadal nad tintą */
+.hero {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  color: #fff;
+  padding: 4rem 2rem;
+}
+.hero h1 {
+  margin: 0 0 1rem;
+  font-size: 2rem;
+}
+.hero p {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+/* 4. Szara fala pod headerem */
+.wave {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 40px;
+  overflow: hidden;
+}
+.wave svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.wave svg path {
+  fill: var(--color-gray);
+}

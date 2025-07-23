@@ -23,7 +23,7 @@
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.1);
-  color: var(--text-color);
+  color: #333333;
   cursor: pointer;
   transition: all 0.3s ease;
   font-size: 0.9rem;
@@ -72,7 +72,7 @@
 }
 
 .ellipsis {
-  color: var(--text-color);
+  color: #333333;
   opacity: 0.6;
   padding: 0.5rem;
   font-weight: bold;

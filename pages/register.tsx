@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import AuthLayout from '../components/AuthLayout'
+import SocialAuth from '../components/SocialAuth'
 import styles from '../styles/AuthForm.module.css'
 
 export default function Register() {
@@ -64,6 +65,9 @@ export default function Register() {
         <button type="submit" className={styles.submit}>
           Zarejestruj się
         </button>
+
+        {/* Dodajemy piękne przyciski social auth */}
+        <SocialAuth />
 
         <Link href="/login" className={styles.back}>
           ← Masz już konto? Zaloguj się

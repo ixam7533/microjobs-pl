@@ -1,11 +1,8 @@
 export const PRICING_TIERS = [
-  { min: 0, max: 49, addPrice: 2.50, promoPrice: 5.00 },
-  { min: 50, max: 200, addPrice: 6.00, promoPrice: 8.50 },
-  { min: 201, max: 300, addPrice: 12.50, promoPrice: 15.00 },
-  { min: 301, max: 400, addPrice: 17.50, promoPrice: 20.00 },
-  { min: 401, max: 600, addPrice: 22.50, promoPrice: 25.00 },
-  { min: 601, max: 1000, addPrice: 30.00, promoPrice: 35.00 },
-  { min: 1001, max: Infinity, addPrice: 40.00, promoPrice: 45.00 }
+  { min: 0, max: 100, addPrice: 6.00, promoPrice: 4.00 },
+  { min: 101, max: 200, addPrice: 6.00, promoPrice: 10.99 },
+  { min: 201, max: 1000, addPrice: 6.00, promoPrice: 15.00 },
+  { min: 1001, max: Infinity, addPrice: 6.00, promoPrice: 0 } // Brak promocji dla ogłoszeń powyżej 1000zł
 ]
 
 export const PRO_VERSIONS = {
@@ -13,24 +10,28 @@ export const PRO_VERSIONS = {
     name: 'Wersja PRO',
     price: 15.00,
     features: [
-      'Nielimitowane ogłoszenia',
-      'Brak reklam',
-      '1 darmowe promowane ogłoszenie/miesiąc',
-      'Statystyki wyświetleń',
-      'Wsparcie techniczne'
+      'Nielimitowane darmowe ogłoszenia',
+      'Brak reklam na stronie',
+      'Statystyki wyświetleń ogłoszeń',
+      'Priorytetowe wsparcie techniczne',
+      'Wyróżniony status na profilu'
     ],
-    promotions: 1
+    promotions: 3, // 3 darmowe promowania na miesiąc dla PRO
+    freePromotions: true
   },
   PRO_PLUS: {
     name: 'Wersja PRO+',
     price: 25.00,
     features: [
       'Wszystko z wersji PRO',
-      'Darmowe promowanie 3 ogłoszeń/miesiąc',
-      'Wyróżnione ramki',
-      'Wsparcie techniczne'
+      'Nielimitowane darmowe ogłoszenia',
+      'Nieograniczone darmowe promowanie ogłoszeń',
+      'Wyróżnione ramki wokół ogłoszeń',
+      'Najwyższy priorytet w wynikach wyszukiwania',
+      'Dedykowane wsparcie techniczne'
     ],
-    promotions: 3
+    promotions: -1, // Nieograniczone darmowe promowania dla PRO+
+    freePromotions: true
   }
 }
 

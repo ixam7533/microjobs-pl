@@ -8,9 +8,19 @@ import OfferModal from '../components/OfferModal'
 import AccountSettings from '../components/AccountSettings'
 import UserRatings from '../components/UserRatings'
 import SubscriptionManager from '../components/SubscriptionManager'
+import SmartShopifyPromoButton from '../components/SmartShopifyPromoButton'
+import PromotionPaymentModal from '../components/PromotionPaymentModal'
 
 type Theme = 'dark' | 'light' | 'night' | 'natura'
 type Tab = 'offers' | 'favorites' | 'chat' | 'settings' | 'ratings' | 'subscription'
+
+interface User {
+  email: string
+  isAdmin?: boolean
+  hasPro?: boolean
+  proType?: 'PRO' | 'PRO_PLUS' | null
+  promotionsRemaining?: number
+}
 
 interface Offer {
   id: string
@@ -22,48 +32,84 @@ interface Offer {
   ownerEmail: string
   createdAt: string
   images?: string[]
+  promoted?: boolean
+  promotedUntil?: string
+  views?: number
+  likes?: number
 }
 
 export default function Profile() {
   const router = useRouter()
   const [offers, setOffers] = useState<Offer[]>([])
   const [favorites, setFavorites] = useState<Offer[]>([])
-  const [user, setUser] = useState<{email:string; isAdmin?: boolean}|null>(null)
+  const [user, setUser] = useState<User | null>(null)
   const [selectedChatId, setSelectedChatId] = useState<number | null>(null)
+  const [selectedOfferId, setSelectedOfferId] = useState<string | null>(null)
   const [currentTheme, setCurrentTheme] = useState<Theme>('natura')
   const [activeTab, setActiveTab] = useState<Tab>('offers')
   const [selectedOffer, setSelectedOffer] = useState<Offer | null>(null)
   const [promotingOfferId, setPromotingOfferId] = useState<string | null>(null)
+  const [showPromotionModal, setShowPromotionModal] = useState(false)
+  const [offerToPromote, setOfferToPromote] = useState<Offer | null>(null)
 
   useEffect(() => {
     fetch('/api/auth/me').then(r=>r.json()).then(d=>setUser(d.user))
   },[])
 
-  // Obsługa parametrów URL
+  // Obsługa parametrów URL i localStorage mapowania
   useEffect(() => {
     if (router.query.tab) {
       setActiveTab(router.query.tab as Tab)
     }
     if (router.query.chatId) {
-      setSelectedChatId(parseInt(router.query.chatId as string))
+      const chatId = parseInt(router.query.chatId as string)
+      setSelectedChatId(chatId)
+      
+      // Jeśli offerId jest w URL, użyj go
+      if (router.query.offerId) {
+        setSelectedOfferId(router.query.offerId as string)
+      } else {
+        // Jeśli nie ma offerId w URL, sprawdź localStorage
+        try {
+          const chatOfferMap = JSON.parse(localStorage.getItem('chatOfferMap') || '{}')
+          const mappedOfferId = chatOfferMap[chatId]
+          if (mappedOfferId) {
+            console.log('📂 Found offer mapping in localStorage:', { chatId, offerId: mappedOfferId })
+            setSelectedOfferId(mappedOfferId.toString())
+          }
+        } catch (error) {
+          console.error('⚠️ Failed to read chat-offer mapping:', error)
+        }
+      }
+    }
+    if (router.query.offerId && !router.query.chatId) {
+      setSelectedOfferId(router.query.offerId as string)
     }
   }, [router.query])
 
   useEffect(() => {
     if (!user) return
-    fetch('/api/offers')
-      .then(r=>r.json())
-      .then((data: { offers: Offer[] }) => {
-        const all = data.offers || []
-        if (user.isAdmin) {
-          // Admin widzi wszystkie ogłoszenia
-          setOffers(all)
-        } else {
-          // Zwykły użytkownik widzi tylko swoje
-          setOffers(all.filter(o => o.ownerEmail === user.email))
-        }
-      })
-      .catch(console.error)
+    
+    // Sprawdź czy użytkownik jest adminem
+    const isAdmin = user.email === 'admin@admin.com' || user.isAdmin
+    
+    if (isAdmin) {
+      // Admin widzi wszystkie ogłoszenia
+      fetch('/api/offers')
+        .then(r=>r.json())
+        .then((data: { offers: Offer[] }) => {
+          setOffers(data.offers || [])
+        })
+        .catch(console.error)
+    } else {
+      // Zwykły użytkownik - używaj dedykowanego endpointu
+      fetch('/api/auth/my-offers')
+        .then(r=>r.json())
+        .then((data: { offers: Offer[] }) => {
+          setOffers(data.offers || [])
+        })
+        .catch(console.error)
+    }
   },[user])
 
   useEffect(() => {
@@ -95,49 +141,110 @@ export default function Profile() {
 
   const del = async (id: string | number) => {
     if (confirm('Usunąć to ogłoszenie?')) {
-      await fetch(`/api/offers/${id}`,{method:'DELETE'})
-      setOffers(offers.filter(o=>o.id!==id))
+      try {
+        const response = await fetch(`/api/offers/${id}`, {
+          method: 'DELETE',
+          credentials: 'include'
+        })
+        
+        if (response.ok) {
+          // Usuń z lokalnego stanu tylko jeśli request się powiódł
+          setOffers(offers.filter(o=>o.id!==id))
+          alert('Ogłoszenie zostało usunięte!')
+        } else {
+          const error = await response.json()
+          alert(`Błąd: ${error.error || 'Nie udało się usunąć ogłoszenia'}`)
+        }
+      } catch (error) {
+        console.error('Error deleting offer:', error)
+        alert('Wystąpił błąd podczas usuwania ogłoszenia')
+      }
     }
   }
 
-  const openOfferDetails = (offer: Offer) => {
-    setSelectedOffer(offer)
+  const removeFavorite = async (offerId: string | number) => {
+    if (confirm('Usunąć z ulubionych?')) {
+      try {
+        const response = await fetch('/api/auth/favorites', {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          credentials: 'include',
+          body: JSON.stringify({ offerId })
+        })
+        
+        if (response.ok) {
+          setFavorites(favorites.filter(o => o.id !== offerId))
+        } else {
+          alert('Błąd podczas usuwania z ulubionych')
+        }
+      } catch (error) {
+        console.error('Error removing from favorites:', error)
+        alert('Błąd podczas usuwania z ulubionych')
+      }
+    }
+  }
+
+  const openOfferDetails = async (offer: Offer) => {
+    // Przekieruj na stronę główną z wybranym ogłoszeniem
+    router.push(`/?offerId=${offer.id}`)
   }
 
   const closeOfferDetails = () => {
     setSelectedOffer(null)
   }
 
-  const promoteOffer = async (offerId: string) => {
-    setPromotingOfferId(offerId)
-    try {
-      const token = document.cookie.split(';').find(row => row.startsWith('token='))?.split('=')[1]
-      if (!token) {
-        alert('Musisz być zalogowany')
-        return
-      }
+  const initiatePromotion = (offer: Offer) => {
+    // Sprawdź czy użytkownik ma PRO
+    if (user?.hasPro) {
+      // Użytkownicy PRO - bezpośrednio promuj
+      promoteOffer(offer.id)
+    } else {
+      // Użytkownicy bez PRO - pokaż modal płatności
+      setOfferToPromote(offer)
+      setShowPromotionModal(true)
+    }
+  }
 
+  const promoteOffer = async (offerId: string | number) => {
+    const offerIdStr = offerId.toString()
+    setPromotingOfferId(offerIdStr)
+    try {
       const response = await fetch('/api/offers/promote', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({ offerId })
+        credentials: 'include',
+        body: JSON.stringify({ offerId: offerIdStr })
       })
 
       if (response.ok) {
         const data = await response.json()
-        alert(`Ogłoszenie zostało promowane! Pozostało promowań: ${data.promotionsRemaining}`)
+        if (user?.hasPro) {
+          // Dla PRO+ (promotionsRemaining = -1) wyświetl inną wiadomość
+          if (data.promotionsRemaining === -1) {
+            alert('Ogłoszenie zostało promowane! (PRO+ - nieograniczone promocje)')
+          } else {
+            alert(`Ogłoszenie zostało promowane! Pozostało promowań: ${data.promotionsRemaining}`)
+          }
+        } else {
+          alert('Płatność została przetworzona! Ogłoszenie zostało promowane na 7 dni.')
+        }
         // Refresh offers to show promoted status
         if (user) {
-          fetch('/api/offers').then(r=>r.json()).then(all=>{
-            if (user.isAdmin) {
-              setOffers(all)
-            } else {
-              setOffers(all.filter((o: any) => o.ownerEmail === user.email))
-            }
-          })
+          const isAdmin = user.email === 'admin@admin.com' || user.isAdmin
+          
+          if (isAdmin) {
+            fetch('/api/offers').then(r=>r.json()).then((data) => {
+              setOffers(data.offers || [])
+            })
+          } else {
+            fetch('/api/auth/my-offers').then(r=>r.json()).then((data) => {
+              setOffers(data.offers || [])
+            })
+          }
         }
       } else {
         const error = await response.json()
@@ -148,6 +255,24 @@ export default function Profile() {
       alert('Błąd podczas promowania ogłoszenia')
     } finally {
       setPromotingOfferId(null)
+    }
+  }
+
+  const handleChatDeleted = (deletedChatId: number) => {
+    // Jeśli usunięty chat był aktualnie wybrany, wyczyść wybór
+    if (selectedChatId === deletedChatId) {
+      setSelectedChatId(null)
+      setSelectedOfferId(null)
+    }
+    
+    // Usuń mapowanie z localStorage
+    try {
+      const chatOfferMap = JSON.parse(localStorage.getItem('chatOfferMap') || '{}')
+      delete chatOfferMap[deletedChatId]
+      localStorage.setItem('chatOfferMap', JSON.stringify(chatOfferMap))
+      console.log('🗑️ Removed chat-offer mapping for chat:', deletedChatId)
+    } catch (error) {
+      console.error('⚠️ Failed to clean chat-offer mapping:', error)
     }
   }
 
@@ -164,30 +289,49 @@ export default function Profile() {
               </div>
             ) : (
               offers.map((offer) => (
-                <div key={offer.id} className={styles.offerCard} onClick={() => openOfferDetails(offer)}>
-                  <div className={styles.offerHeader}>
-                    <h3>{offer.title}</h3>
-                    <span className={styles.offerPrice}>{offer.price} zł</span>
-                  </div>
-                  <p className={styles.offerDescription}>{offer.description}</p>
-                  <div className={styles.offerFooter}>
-                    <span className={styles.offerCategory}>{offer.category}</span>
-                    <span className={styles.offerLocation}>{offer.location}</span>
+                <div key={offer.id} className={styles.offerCard}>
+                  <div className={styles.offerContent} onClick={() => openOfferDetails(offer)}>
+                    <div className={styles.offerHeader}>
+                      <h3>{offer.title}</h3>
+                      <span className={styles.offerPrice}>{offer.price} zł</span>
+                    </div>
+                    <p className={styles.offerDescription}>{offer.description}</p>
+                    <div className={styles.offerFooter}>
+                      <span className={styles.offerCategory}>{offer.category}</span>
+                      <span className={styles.offerLocation}>{offer.location}</span>
+                    </div>
                   </div>
                   <div className={styles.offerActions}>
-                    <button onClick={(e) => { e.stopPropagation(); del(offer.id) }} className={styles.deleteBtn}>
-                      Usuń
-                    </button>
                     <button 
                       onClick={(e) => { 
                         e.stopPropagation(); 
-                        promoteOffer(offer.id) 
+                        router.push(`/edit/${offer.id}`)
                       }} 
-                      className={styles.promoteBtn}
-                      disabled={promotingOfferId === offer.id}
+                      className={styles.editBtn}
+                      style={{ width: '100%', fontSize: '0.9rem', padding: '0.8rem 1.2rem' }}
                     >
-                      {promotingOfferId === offer.id ? 'Promowanie...' : 'Promuj'}
+                      Edytuj ogłoszenie
                     </button>
+                    <button 
+                      onClick={(e) => { e.stopPropagation(); del(offer.id) }} 
+                      className={styles.deleteBtn}
+                      style={{ width: '100%', fontSize: '0.9rem', padding: '0.8rem 1.2rem' }}
+                    >
+                      Usuń ogłoszenie
+                    </button>
+                    <div onClick={(e) => e.stopPropagation()}>
+                      <SmartShopifyPromoButton 
+                        offer={{
+                          id: offer.id,
+                          price: offer.price || 0,
+                          title: offer.title
+                        }}
+                        onPromotionStart={() => {
+                          setPromotingOfferId(offer.id.toString())
+                          console.log(`Rozpoczynam promocję ogłoszenia: ${offer.title}`)
+                        }}
+                      />
+                    </div>
                   </div>
                 </div>
               ))
@@ -205,15 +349,29 @@ export default function Profile() {
               </div>
             ) : (
               favorites.map((offer) => (
-                <div key={offer.id} className={styles.offerCard} onClick={() => openOfferDetails(offer)}>
-                  <div className={styles.offerHeader}>
-                    <h3>{offer.title}</h3>
-                    <span className={styles.offerPrice}>{offer.price} zł</span>
+                <div key={offer.id} className={styles.offerCard}>
+                  <div className={styles.offerContent} onClick={() => openOfferDetails(offer)}>
+                    <div className={styles.offerHeader}>
+                      <h3>{offer.title}</h3>
+                      <span className={styles.offerPrice}>{offer.price} zł</span>
+                    </div>
+                    <p className={styles.offerDescription}>{offer.description}</p>
+                    <div className={styles.offerFooter}>
+                      <span className={styles.offerCategory}>{offer.category}</span>
+                      <span className={styles.offerLocation}>{offer.location}</span>
+                    </div>
                   </div>
-                  <p className={styles.offerDescription}>{offer.description}</p>
-                  <div className={styles.offerFooter}>
-                    <span className={styles.offerCategory}>{offer.category}</span>
-                    <span className={styles.offerLocation}>{offer.location}</span>
+                  <div className={styles.offerActions} style={{ gridTemplateColumns: '1fr' }}>
+                    <button 
+                      onClick={(e) => { 
+                        e.stopPropagation(); 
+                        removeFavorite(offer.id) 
+                      }} 
+                      className={styles.deleteBtn}
+                      style={{ width: '100%', fontSize: '0.9rem', padding: '0.8rem 1.2rem' }}
+                    >
+                      Usuń z ulubionych
+                    </button>
                   </div>
                 </div>
               ))
@@ -223,8 +381,67 @@ export default function Profile() {
       case 'chat':
         return (
           <div className={styles.tabContent}>
-            <h3>Wiadomości</h3>
-            <p>Tutaj będą wyświetlane Twoje rozmowy.</p>
+            <div style={{
+              display: 'flex',
+              height: '650px',
+              width: '90%',
+              margin: '0 auto',
+              borderRadius: '12px',
+              overflow: 'hidden',
+              background: 'rgba(255, 255, 255, 0.95)',
+              backdropFilter: 'blur(10px)',
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)',
+              border: '1px solid rgba(255, 255, 255, 0.2)'
+            }}>
+              <div style={{
+                width: '300px',
+                borderRight: '1px solid rgba(0, 0, 0, 0.1)',
+                background: 'rgba(255, 255, 255, 0.8)',
+                overflowY: 'auto'
+              }}>
+                <ChatList 
+                  onSelect={setSelectedChatId}
+                  onChatDeleted={handleChatDeleted}
+                />
+              </div>
+              <div style={{
+                flex: 1,
+                display: 'flex',
+                flexDirection: 'column',
+                background: '#f8f9fa'
+              }}>
+                {selectedChatId ? (
+                  <ChatWindow 
+                    chatId={selectedChatId} 
+                    offerId={selectedOfferId}
+                    onChatDeleted={handleChatDeleted}
+                  />
+                ) : (
+                  <div style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    height: '100%',
+                    color: '#6c757d',
+                    textAlign: 'center',
+                    padding: '2rem'
+                  }}>
+                    <div style={{
+                      fontSize: '4rem',
+                      marginBottom: '1rem',
+                      opacity: 0.5
+                    }}>💬</div>
+                    <h3 style={{ margin: '0 0 0.5rem 0', color: '#000000', fontSize: '1.5rem' }}>
+                      Wybierz rozmowę
+                    </h3>
+                    <p style={{ margin: 0, fontSize: '1rem', color: '#333333' }}>
+                      Kliknij na rozmowę z lewej strony, aby rozpocząć pisanie wiadomości
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         )
       case 'settings':
@@ -382,45 +599,27 @@ export default function Profile() {
           </div>
         </div>
 
-        {/* Modal z detalami ogłoszenia */}
-        {selectedOffer && (
-          <div className={styles.modal} onClick={closeOfferDetails}>
-            <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-              <div className={styles.modalHeader}>
-                <h2>{selectedOffer.title}</h2>
-                <button className={styles.closeBtn} onClick={closeOfferDetails}>×</button>
-              </div>
-              <div className={styles.modalBody}>
-                <div className={styles.offerPrice}>{selectedOffer.price} zł</div>
-                <div className={styles.offerMeta}>
-                  <span className={styles.category}>{selectedOffer.category}</span>
-                  <span className={styles.location}>{selectedOffer.location}</span>
-                  <span className={styles.date}>
-                    {new Date(selectedOffer.createdAt).toLocaleDateString()}
-                  </span>
-                </div>
-                <div className={styles.offerDescription}>
-                  {selectedOffer.description}
-                </div>
-                <div className={styles.contactInfo}>
-                  <strong>Kontakt:</strong> {selectedOffer.ownerEmail}
-                </div>
-              </div>
-              <div className={styles.modalFooter}>
-                <button className={styles.editBtn}>Edytuj ogłoszenie</button>
-                <button 
-                  className={styles.deleteBtn} 
-                  onClick={() => {
-                    del(selectedOffer.id)
-                    closeOfferDetails()
-                  }}
-                >
-                  Usuń ogłoszenie
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
+        {/* Modal szczegółów ogłoszenia */}
+        <OfferModal
+          offer={selectedOffer}
+          isOpen={!!selectedOffer}
+          onClose={closeOfferDetails}
+        />
+
+        {/* Modal płatności promocji */}
+        <PromotionPaymentModal
+          isOpen={showPromotionModal}
+          onClose={() => {
+            setShowPromotionModal(false)
+            setOfferToPromote(null)
+          }}
+          offer={offerToPromote ? {
+            id: offerToPromote.id,
+            title: offerToPromote.title,
+            price: offerToPromote.price
+          } : { id: '', title: '', price: 0 }}
+          onConfirm={promoteOffer}
+        />
       </main>
     </div>
   )

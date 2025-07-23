@@ -25,25 +25,32 @@ export default function AdBlocker({ children }: AdBlockerProps) {
 
   const checkSubscription = async () => {
     try {
+      // Sprawdź różne sposoby autoryzacji
       const token = document.cookie.split(';').find(row => row.startsWith('token='))?.split('=')[1]
-      
-      if (!token) {
-        setLoading(false)
-        return
+      const headers: any = {
+        'Content-Type': 'application/json'
+      }
+
+      // Dodaj token JWT jeśli istnieje
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`
       }
 
       const response = await fetch('/api/subscriptions/status', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
+        method: 'GET',
+        headers,
+        credentials: 'include' // Ważne dla sesji NextAuth
       })
 
       if (response.ok) {
         const data = await response.json()
+        console.log('Subscription status:', data) // Debug log
         setSubscriptionStatus({
           hasActiveSubscription: data.subscription.isActive,
           subscriptionType: data.subscription.type
         })
+      } else {
+        console.log('Subscription status response not ok:', response.status)
       }
     } catch (error) {
       console.error('Error checking subscription:', error)
@@ -53,13 +60,16 @@ export default function AdBlocker({ children }: AdBlockerProps) {
   }
 
   if (loading) {
-    return <div className={styles.loading}>Sprawdzanie subskrypcji...</div>
+    return null // Nie pokazuj reklam podczas ładowania
   }
 
   // If user has active subscription, don't show ads
   if (subscriptionStatus.hasActiveSubscription) {
+    console.log('User has PRO subscription, hiding ads:', subscriptionStatus.subscriptionType) // Debug log
     return null
   }
+
+  console.log('User has no subscription, showing ads') // Debug log
 
   // Show ads for users without subscription
   return (

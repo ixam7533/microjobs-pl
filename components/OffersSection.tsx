@@ -25,9 +25,10 @@ export type Offer = {
 
 interface OffersSectionProps {
   offers: Offer[]
+  initialOfferId?: string | null
 }
 
-export default function OffersSection({ offers }: OffersSectionProps) {
+export default function OffersSection({ offers, initialOfferId }: OffersSectionProps) {
   const [selectedOffer, setSelectedOffer] = useState<Offer | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [favoriteOffers, setFavoriteOffers] = useState<number[]>([])
@@ -48,8 +49,27 @@ export default function OffersSection({ offers }: OffersSectionProps) {
     fetchFavorites()
   }, [])
 
+  // Automatycznie otwórz modal jeśli podano initialOfferId
+  useEffect(() => {
+    if (initialOfferId) {
+      const offerId = parseInt(initialOfferId)
+      if (!isNaN(offerId)) {
+        handleOfferClick(offerId)
+      }
+    }
+  }, [initialOfferId])
+
   const handleOfferClick = async (offerId: number) => {
     try {
+      // Zwiększ licznik wyświetleń
+      fetch('/api/offers/view', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ offerId: offerId }),
+      }).catch(error => console.error('Błąd podczas zwiększania wyświetleń:', error))
+
       // Pobierz szczegóły ogłoszenia
       const response = await fetch(`/api/offers/${offerId}`)
       const offerDetails = await response.json()
@@ -95,12 +115,6 @@ export default function OffersSection({ offers }: OffersSectionProps) {
               onFavoriteChange={handleFavoriteChange}
               isPromoted={o.isPromoted}
             />
-            {/* Dodaj reklamę co 6 ogłoszeń */}
-            {(index + 1) % 6 === 0 && (
-              <div className={styles.adSlot}>
-                <Advertisement type="square" />
-              </div>
-            )}
           </React.Fragment>
         ))}
       </div>

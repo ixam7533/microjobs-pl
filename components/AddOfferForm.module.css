@@ -9,6 +9,94 @@
   border: 1px solid var(--border-color);
 }
 
+/* Nowe style dla systemu publikacji */
+.publishOptions {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.optionSection {
+  padding: 20px;
+  border: 2px solid #e9ecef;
+  border-radius: 12px;
+  background: #fff;
+  transition: all 0.3s ease;
+}
+
+.optionSection:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.optionTitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 10px;
+}
+
+.priceInfo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.priceAmount {
+  font-size: 24px;
+  font-weight: bold;
+  color: #2c3e50 !important;
+}
+
+.priceDescription {
+  color: #7f8c8d;
+  font-size: 14px;
+}
+
+.promoCheckbox {
+  margin-bottom: 15px;
+}
+
+.promoCheckbox label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 500;
+  cursor: pointer;
+  color: #2c3e50 !important;
+}
+
+.promoCheckbox label span {
+  color: #2c3e50 !important;
+  font-size: 16px;
+}
+
+.promoCheckbox input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #3498db;
+  opacity: 1;
+  background-color: white;
+  border: 2px solid #ccc;
+}
+
+.promoOption {
+  margin-top: 15px;
+  padding: 15px;
+  border: 2px solid #b359f9;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #f8f4ff 0%, #f0eaff 100%);
+}
+
+.noPromoInfo {
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  text-align: center;
+  color: #6c757d;
+}
+
 .progress {
   margin-bottom: 2rem;
 }
@@ -24,14 +112,14 @@
 
 .progressFill {
   height: 100%;
-  background: linear-gradient(90deg, #3b82f6, #10b981);
+  background: linear-gradient(90deg, #3b82f6, #ffffff);
   transition: width 0.3s ease;
   border-radius: 4px;
 }
 
 .progressText {
   font-size: 0.875rem;
-  color: var(--text-secondary);
+  color: #ffffff;
   text-align: center;
   display: block;
 }
@@ -46,7 +134,7 @@
 }
 
 .step h2 {
-  color: var(--text-color);
+  color: #ffffff;
   margin-bottom: 1rem;
   font-size: 1.5rem;
   font-weight: 600;
@@ -54,7 +142,7 @@
 }
 
 .subtitle {
-  color: var(--text-secondary);
+  color: #ffffff;
   text-align: center;
   margin-bottom: 1.5rem;
   font-size: 0.875rem;
@@ -96,13 +184,13 @@
 }
 
 .offerTypeCard h3 {
-  color: var(--text-color);
+  color: #ffffff;
   margin-bottom: 0.5rem;
   font-size: 1.25rem;
 }
 
 .offerTypeCard p {
-  color: var(--text-secondary);
+  color: #ffffff;
   font-size: 0.875rem;
 }
 
@@ -137,13 +225,13 @@
 }
 
 .categoryCard h3 {
-  color: var(--text-color);
+  color: #ffffff;
   margin-bottom: 0.5rem;
   font-size: 1.125rem;
 }
 
 .categoryCard p {
-  color: var(--text-secondary);
+  color: #ffffff;
   font-size: 0.875rem;
 }
 
@@ -160,7 +248,7 @@
   border: 2px solid var(--border-color);
   border-radius: 25px;
   padding: 0.5rem 1rem;
-  color: var(--text-color);
+  color: #ffffff;
   cursor: pointer;
   transition: all 0.3s ease;
   font-size: 0.875rem;
@@ -190,25 +278,41 @@
 }
 
 .formGroup label {
-  color: var(--text-color);
+  color: #ffffff !important; /* Biały tekst dla wszystkich kroków oprócz step 6 */
   font-weight: 500;
   margin-bottom: 0.5rem;
   font-size: 0.875rem;
 }
 
+/* Wyjątek dla kroku 6 - przywróć ciemny kolor dla tego kroku */
+.step6 .formGroup label,
+.step6 .promoLabel,
+.step6 .optionTitle,
+.step6 .priceDescription {
+  color: #2c3e50 !important; /* Ciemny tekst tylko dla kroku 6 */
+}
+
 .formGroup input,
-.formGroup textarea {
+.formGroup textarea,
+.formGroup select {
   background: var(--input-bg);
   border: 2px solid var(--border-color);
   border-radius: 8px;
   padding: 0.75rem;
-  color: var(--text-color);
+  color: #ffffff !important; /* Biały tekst w polach input dla lepszej widoczności */
   font-size: 1rem;
   transition: border-color 0.3s ease;
 }
 
+/* Placeholder też niech będzie jaśniejszy */
+.formGroup input::placeholder,
+.formGroup textarea::placeholder {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
 .formGroup input:focus,
-.formGroup textarea:focus {
+.formGroup textarea:focus,
+.formGroup select:focus {
   outline: none;
   border-color: var(--color-primary);
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
@@ -250,6 +354,19 @@
   accent-color: var(--color-primary);
 }
 
+.promoInfo {
+  margin-top: 0.5rem;
+  margin-left: 2.25rem;
+  padding: 0.75rem;
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  border-radius: 8px;
+  font-size: 0.875rem;
+  color: #ffffff;
+  opacity: 0.8;
+  line-height: 1.4;
+}
+
 .pricingSummary {
   background: var(--card-bg);
   border: 2px solid var(--border-color);
@@ -259,13 +376,13 @@
 }
 
 .pricingSummary h3 {
-  color: var(--text-color);
+  color: #ffffff;
   margin-bottom: 1rem;
   font-size: 1.125rem;
 }
 
 .freeOffer {
-  background: linear-gradient(135deg, #10b981, #059669, #047857);
+  background: linear-gradient(135deg, #ffffff, #ffffff, #ffffff);
   color: white;
   padding: 2rem;
   border-radius: 16px;
@@ -360,14 +477,14 @@
 .feeItem {
   display: flex;
   justify-content: space-between;
-  color: var(--text-secondary);
+  color: #ffffff;
   font-size: 0.875rem;
 }
 
 .feeTotal {
   display: flex;
   justify-content: space-between;
-  color: var(--text-color);
+  color: #ffffff;
   font-weight: 600;
   font-size: 1rem;
   padding-top: 0.5rem;
@@ -377,7 +494,7 @@
 
 /* Banner informujący o darmowym pierwszym ogłoszeniu */
 .freeOfferBanner {
-  background: linear-gradient(135deg, #10b981, #059669);
+  background: linear-gradient(135deg, #e2da00, #d2cc0c);
   color: white;
   padding: 1.5rem;
   border-radius: 12px;
@@ -466,14 +583,16 @@
 
 .nextBtn:disabled,
 .submitBtn:disabled {
-  background: var(--text-secondary);
+  background: #6c757d !important;
+  color: #ffffff !important;
   cursor: not-allowed;
   transform: none;
+  opacity: 0.7;
 }
 
 .backBtn {
   background: var(--card-bg);
-  color: var(--text-color);
+  color: #ffffff;
   border: 2px solid var(--border-color);
 }
 
@@ -483,12 +602,16 @@
 }
 
 .submitBtn {
-  background: linear-gradient(90deg, #10b981, #059669);
+  background: linear-gradient(90deg, #28a745, #218838) !important;
+  color: #ffffff !important;
   min-width: 200px;
+  border: 2px solid #28a745 !important;
 }
 
 .submitBtn:hover {
-  background: linear-gradient(90deg, #059669, #047857);
+  background: linear-gradient(90deg, #218838, #1e7e34) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
 }
 
 /* Location section styles */
@@ -513,7 +636,7 @@
 
 .locationField label {
   font-size: 0.875rem;
-  color: var(--text-secondary);
+  color: #ffffff;
   font-weight: 500;
 }
 
@@ -523,7 +646,7 @@
   border: 1px solid var(--border-color);
   border-radius: 8px;
   background: var(--input-bg);
-  color: var(--text-color);
+  color: #ffffff;
   font-size: 0.875rem;
 }
 
@@ -538,7 +661,7 @@
   border: 1px solid rgba(59, 130, 246, 0.3);
   border-radius: 8px;
   font-size: 0.875rem;
-  color: var(--text-color);
+  color: #ffffff;
   margin-top: 0.5rem;
 }
 
@@ -563,5 +686,77 @@
   .locationRow {
     flex-direction: column;
     gap: 0.5rem;
+  }
+}
+
+/* Image Preview Styles */
+.imagePreviewGrid {
+  margin-top: 1rem;
+}
+
+.imagesList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.imagePreviewItem {
+  position: relative;
+  background: var(--card-bg);
+  border-radius: 8px;
+  padding: 0.5rem;
+  border: 1px solid var(--border-color);
+  text-align: center;
+}
+
+.imagePreview {
+  width: 100%;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 6px;
+  margin-bottom: 0.5rem;
+}
+
+.removeImageBtn {
+  position: absolute;
+  top: 0.25rem;
+  right: 0.25rem;
+  width: 24px;
+  height: 24px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 0, 0, 0.8);
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  transition: background-color 0.2s ease;
+}
+
+.removeImageBtn:hover {
+  background: rgba(255, 0, 0, 1);
+}
+
+.imageName {
+  font-size: 0.75rem;
+  color: #ffffff;
+  display: block;
+  word-break: break-all;
+}
+
+/* Animacja konfetti */
+@keyframes confetti-fall {
+  0% {
+    transform: translateY(-100%) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) rotate(360deg);
+    opacity: 0;
   }
 }

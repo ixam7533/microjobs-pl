@@ -41,7 +41,7 @@ export default function OfferModal({ offer, isOpen, onClose }: OfferModalProps) 
       })
       if (response.ok) {
         const chat = await response.json()
-        window.location.href = `/profile?tab=chat&chatId=${chat.chatId}`
+        window.location.href = `/profile?tab=chat&chatId=${chat.chatId}&offerId=${offer.id}`
       } else {
         alert('Błąd podczas rozpoczynania chatu')
       }
@@ -131,7 +131,9 @@ export default function OfferModal({ offer, isOpen, onClose }: OfferModalProps) 
                 <span className={styles.contactIcon}>👤</span>
                 <div>
                   <span className={styles.contactLabel}>Imię</span>
-                  <span className={styles.contactValue}>{offer.contactName}</span>
+                  <span className={styles.contactValue}>
+                    {offer.ownerName || offer.owner?.name || offer.contactName}
+                  </span>
                 </div>
               </div>
               <div className={styles.contactItem}>

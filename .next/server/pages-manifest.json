@@ -2,9 +2,16 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/api/auth/favorites": "pages/api/auth/favorites.js",
-  "/api/offers": "pages/api/offers.js",
+  "/api/subscriptions/status": "pages/api/subscriptions/status.js",
   "/": "pages/index.js",
+  "/add-new": "pages/add-new.js",
+  "/profile": "pages/profile.js",
+  "/api/messages/unread-count": "pages/api/messages/unread-count.js",
   "/api/auth/[...nextauth]": "pages/api/auth/[...nextauth].js",
-  "/api/auth/me": "pages/api/auth/me.js"
+  "/api/auth/me": "pages/api/auth/me.js",
+  "/api/offers": "pages/api/offers.js",
+  "/api/offers/[id]": "pages/api/offers/[id].js",
+  "/api/auth/favorites": "pages/api/auth/favorites.js",
+  "/api/offers/promote": "pages/api/offers/promote.js",
+  "/api/offers/view": "pages/api/offers/view.js"
 }

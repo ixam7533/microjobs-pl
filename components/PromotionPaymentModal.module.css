@@ -1,0 +1,291 @@
+/* components/PromotionPaymentModal.module.css */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modalContent {
+  background: var(--bg-color, white);
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  max-width: 500px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  border: 1px solid var(--border-color, #e0e0e0);
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 24px 16px;
+  border-bottom: 1px solid var(--border-color, #e0e0e0);
+}
+
+.modalHeader h3 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-primary, #333);
+}
+
+.closeBtn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: var(--text-secondary, #666);
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.closeBtn:hover {
+  background-color: var(--hover-color, #f5f5f5);
+  color: var(--text-primary, #333);
+}
+
+.modalBody {
+  padding: 24px;
+}
+
+.offerInfo {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 24px;
+}
+
+.offerInfo h4 {
+  margin: 0 0 12px 0;
+  font-size: 1rem;
+  font-weight: 500;
+  opacity: 0.9;
+}
+
+.offerInfo p {
+  margin: 8px 0;
+  font-size: 1rem;
+}
+
+.promotionDetails {
+  margin-bottom: 24px;
+}
+
+.promotionDetails h4 {
+  margin: 0 0 16px 0;
+  font-size: 1.1rem;
+  color: var(--text-primary, #333);
+}
+
+.promotionDetails ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.promotionDetails li {
+  padding: 8px 0;
+  font-size: 0.95rem;
+  color: var(--text-secondary, #666);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pricingSummary {
+  background: var(--bg-secondary, #f8f9fa);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.priceRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  font-size: 1rem;
+  color: var(--text-secondary, #666);
+}
+
+.price {
+  font-weight: 600;
+  color: var(--text-primary, #333);
+}
+
+.totalRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-color, #e0e0e0);
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.totalPrice {
+  color: #2563eb;
+  font-size: 1.2rem;
+}
+
+.paymentInfo {
+  background: #e8f4fd;
+  border-left: 4px solid #2563eb;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.paymentInfo p {
+  margin: 4px 0;
+  font-size: 0.9rem;
+  color: #1e40af;
+}
+
+.modalFooter {
+  display: flex;
+  gap: 12px;
+  padding: 16px 24px 24px;
+  border-top: 1px solid var(--border-color, #e0e0e0);
+}
+
+.cancelBtn,
+.confirmBtn {
+  flex: 1;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.cancelBtn {
+  background: var(--bg-secondary, #f8f9fa);
+  color: var(--text-secondary, #666);
+  border: 1px solid var(--border-color, #e0e0e0);
+}
+
+.cancelBtn:hover:not(:disabled) {
+  background: var(--hover-color, #e9ecef);
+  color: var(--text-primary, #333);
+}
+
+.confirmBtn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.confirmBtn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.confirmBtn:disabled,
+.cancelBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Dark mode support */
+[data-theme="dark"] .modalContent {
+  background: #1a1a1a;
+  border-color: #10b981;
+}
+
+[data-theme="dark"] .modalHeader h3 {
+  color: white;
+}
+
+[data-theme="dark"] .closeBtn {
+  color: #ccc;
+}
+
+[data-theme="dark"] .closeBtn:hover {
+  background-color: #10b981;
+  color: white;
+}
+
+[data-theme="dark"] .promotionDetails h4 {
+  color: white;
+}
+
+[data-theme="dark"] .promotionDetails li {
+  color: #ccc;
+}
+
+[data-theme="dark"] .pricingSummary {
+  background: #2a2a2a;
+}
+
+[data-theme="dark"] .priceRow {
+  color: #ccc;
+}
+
+[data-theme="dark"] .price {
+  color: white;
+}
+
+[data-theme="dark"] .totalRow {
+  border-top-color: #10b981;
+  color: white;
+}
+
+[data-theme="dark"] .modalFooter {
+  border-top-color: #10b981;
+}
+
+[data-theme="dark"] .cancelBtn {
+  background: #2a2a2a;
+  color: #ccc;
+  border-color: #10b981;
+}
+
+[data-theme="dark"] .cancelBtn:hover:not(:disabled) {
+  background: #333;
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .modalOverlay {
+    padding: 16px;
+  }
+  
+  .modalContent {
+    border-radius: 12px;
+  }
+  
+  .modalHeader {
+    padding: 20px 20px 12px;
+  }
+  
+  .modalBody {
+    padding: 20px;
+  }
+  
+  .modalFooter {
+    padding: 12px 20px 20px;
+    flex-direction: column;
+  }
+  
+  .cancelBtn,
+  .confirmBtn {
+    width: 100%;
+  }
+}

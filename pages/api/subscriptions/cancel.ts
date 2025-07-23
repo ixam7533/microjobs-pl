@@ -1,6 +1,7 @@
 // pages/api/subscriptions/cancel.ts
 import { NextApiRequest, NextApiResponse } from 'next'
-import { verifyToken } from '../../../lib/jwt'
+import { getToken } from 'next-auth/jwt'
+import { getUserFromRequest } from '../../../lib/auth'
 import prisma from '../../../lib/prisma'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -9,54 +10,62 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    const authHeader = req.headers.authorization
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return res.status(401).json({ error: 'Token required' })
+    let userInfo = null
+
+    // Sprawdź NextAuth token (logowanie społecznościowe)
+    const nextAuthToken = await getToken({ 
+      req,
+      secret: process.env.NEXTAUTH_SECRET 
+    })
+    if (nextAuthToken && nextAuthToken.email) {
+      userInfo = { email: nextAuthToken.email }
     }
 
-    const token = authHeader.split(' ')[1]
-    const decoded = verifyToken(token) as any
-    
-    if (!decoded || !decoded.userId) {
-      return res.status(401).json({ error: 'Invalid token' })
+    // Jeśli nie ma NextAuth token, sprawdź własny JWT token (logowanie email/hasło)
+    if (!userInfo) {
+      const jwtUser = await getUserFromRequest(req)
+      if (jwtUser) {
+        userInfo = jwtUser
+      }
+    }
+
+    if (!userInfo) {
+      return res.status(401).json({ error: 'Not authenticated' })
     }
 
     const user = await prisma.user.findUnique({
-      where: { id: decoded.userId }
+      where: { email: userInfo.email },
+      include: {
+        subscriptions: {
+          where: { status: 'ACTIVE' },
+          orderBy: { createdAt: 'desc' },
+          take: 1
+        }
+      }
     })
 
     if (!user) {
       return res.status(404).json({ error: 'User not found' })
     }
 
-    // Check if user has active subscription
-    const now = new Date()
-    if (!user.subscriptionEnd || user.subscriptionEnd <= now) {
+    const activeSubscription = user.subscriptions[0]
+    if (!activeSubscription) {
       return res.status(400).json({ error: 'No active subscription found' })
     }
 
     // Update subscription to cancelled (but keep active until end date)
-    await prisma.subscription.updateMany({
-      where: { 
-        userId: decoded.userId, 
-        status: 'ACTIVE' 
-      },
+    await prisma.subscription.update({
+      where: { id: activeSubscription.id },
       data: { 
         status: 'CANCELLED',
         autoRenew: false 
       }
     })
 
-    // Update user's auto-renewal setting
-    await prisma.user.update({
-      where: { id: decoded.userId },
-      data: { emailReminder: false }
-    })
-
     res.status(200).json({ 
       success: true, 
-      message: 'Subscription cancelled successfully. You will keep your benefits until the end of the current billing period.',
-      endsAt: user.subscriptionEnd
+      message: 'Subskrypcja została anulowana. Zachowasz dostęp do funkcji PRO do końca obecnego okresu rozliczeniowego.',
+      endsAt: activeSubscription.endDate
     })
 
   } catch (error) {

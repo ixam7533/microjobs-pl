@@ -11,7 +11,7 @@ export const config = { api: { bodyParser: false } }
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') return res.status(405).end()
 
-  const user = getUserFromRequest(req)
+  const user = await getUserFromRequest(req)
   if (!user) return res.status(401).json({ error: 'Zaloguj się' })
 
   try {
@@ -79,6 +79,31 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         // Stwórz ogłoszenie w bazie danych
         console.log('Tworzenie ogłoszenia w bazie danych...')
+        
+        // Sprawdź czy ogłoszenie ma być promowane
+        let promoted = false
+        let promotedUntil = null
+        let shouldUpdatePromotions = false
+        
+        if (wantPromo) {
+          // Sprawdź czy użytkownik ma aktywną subskrypcję i dostępne promocje
+          const userWithSubscription = await prisma.user.findUnique({
+            where: { id: user.id }
+          })
+          
+          if (userWithSubscription) {
+            const now = new Date()
+            const hasActiveSubscription = userWithSubscription.subscriptionEnd && userWithSubscription.subscriptionEnd > now
+            
+            if (hasActiveSubscription && userWithSubscription.promotionsUsed < userWithSubscription.promotionsLimit) {
+              promoted = true
+              promotedUntil = new Date()
+              promotedUntil.setDate(promotedUntil.getDate() + 7) // 7 dni promocji
+              shouldUpdatePromotions = true
+            }
+          }
+        }
+        
         const offer = await prisma.offer.create({
           data: {
             title,
@@ -91,6 +116,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             contactEmail,
             contactPhone: contactPhone || null,
             offerType: offerType === 'szukam_pracownika' ? 'szukam_pracownika' : 'szukam_pracy',
+            promoted,
+            promotedUntil,
             owner: { connect: { id: user.id } },
             images: { 
               create: imgPaths.map(url => ({ url }))
@@ -102,6 +129,28 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           }
         })
         console.log('Ogłoszenie utworzone:', offer.id)
+        
+        // Aktualizuj licznik promocji jeśli ogłoszenie zostało promowane
+        if (shouldUpdatePromotions) {
+          await prisma.user.update({
+            where: { id: user.id },
+            data: {
+              promotionsUsed: {
+                increment: 1
+              }
+            }
+          })
+          
+          // Stwórz rekord użycia promocji
+          await prisma.promotionUsage.create({
+            data: {
+              userId: user.id,
+              offerId: offer.id
+            }
+          })
+          
+          console.log('Licznik promocji zaktualizowany')
+        }
 
         // Wyślij powiadomienie email
         try {

@@ -3,7 +3,7 @@ import prisma from '../../../../lib/prisma'
 import { getUserFromRequest } from '../../../../lib/auth'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const user = getUserFromRequest(req)
+  const user = await getUserFromRequest(req)
   if (!user) return res.status(401).json({ error: 'Zaloguj się' })
 
   if (req.method === 'GET') {
@@ -72,6 +72,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
       })
 
+      // Zwiększ licznik polubień
+      await prisma.$executeRaw`
+        UPDATE Offer 
+        SET likes = likes + 1 
+        WHERE id = ${parseInt(offerId)}
+      `
+
       res.status(201).json({ success: true, favorite })
     } catch (error) {
       console.error('Błąd dodawania do ulubionych:', error)
@@ -95,6 +102,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           }
         }
       })
+
+      // Zmniejsz licznik polubień
+      await prisma.$executeRaw`
+        UPDATE Offer 
+        SET likes = likes - 1 
+        WHERE id = ${parseInt(offerId)} AND likes > 0
+      `
 
       res.json({ success: true })
     } catch (error) {

@@ -126,6 +126,8 @@ model Offer {
   promoted     Boolean      @default(false)
   promotedUntil DateTime?
   promotionUsages PromotionUsage[]
+  views        Int          @default(0)  // Liczba wyświetleń
+  likes        Int          @default(0)  // Liczba polubień
   ownerId      Int
 }
 
@@ -133,7 +135,7 @@ model OfferImage {
   id      Int    @id @default(autoincrement())
   url     String
   offerId Int
-  offer   Offer  @relation(fields: [offerId], references: [id])
+  offer   Offer  @relation(fields: [offerId], references: [id], onDelete: Cascade)
 }
 
 model Favorite {
@@ -141,7 +143,7 @@ model Favorite {
   userId    Int
   offerId   Int
   createdAt DateTime @default(now())
-  offer     Offer    @relation(fields: [offerId], references: [id])
+  offer     Offer    @relation(fields: [offerId], references: [id], onDelete: Cascade)
   user      User     @relation(fields: [userId], references: [id])
 
   @@unique([userId, offerId])
@@ -163,7 +165,7 @@ model Rating {
   
   // Powiązanie z ofertą (opcjonalne)
   offerId     Int?
-  offer       Offer?   @relation(fields: [offerId], references: [id])
+  offer       Offer?   @relation(fields: [offerId], references: [id], onDelete: Cascade)
   
   @@unique([reviewerId, reviewedId, offerId])
 }

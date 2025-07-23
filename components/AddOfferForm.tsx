@@ -2,17 +2,27 @@
 import { useState, useEffect } from 'react'
 import { CATEGORIES, calculateFees, PRO_VERSIONS } from '../lib/pricing'
 import { wojewodztwa, getMiastaForWojewodztwo } from '../lib/locations'
+import PublishButtonDirect from './PublishButtonDirect'
+import PublishButtonFree from './PublishButtonFree'
+import PublishWithPromo1Direct from './PublishWithPromo1Direct'
+import PublishWithPromoFree from './PublishWithPromoFree'
+import PublishWithPromo2 from './PublishWithPromo2'
+import PublishWithPromo3 from './PublishWithPromo3'
+import PromoButton1 from './PromoButton1'
+import PromoButton2 from './PromoButton2'
+import PromoButton3 from './PromoButton3'
 import styles from './AddOfferForm.module.css'
 
 interface AddOfferFormProps {
   onSubmit: (data: any) => void
   isFirstOffer?: boolean
   userHasPro?: boolean
+  userProType?: 'PRO' | 'PRO_PLUS' | null
 }
 
 type OfferType = 'szukam_pracownika' | 'szukam_pracy'
 
-export default function AddOfferForm({ onSubmit, isFirstOffer = false, userHasPro = false }: AddOfferFormProps) {
+export default function AddOfferForm({ onSubmit, isFirstOffer = false, userHasPro = false, userProType = null }: AddOfferFormProps) {
   const [step, setStep] = useState(1)
   const [offerType, setOfferType] = useState<OfferType>('szukam_pracownika')
   const [title, setTitle] = useState('')
@@ -29,16 +39,133 @@ export default function AddOfferForm({ onSubmit, isFirstOffer = false, userHasPr
   const [contactPhone, setContactPhone] = useState('')
   const [images, setImages] = useState<File[]>([])
   const [wantPromo, setWantPromo] = useState(false)
+  const [wantPaidPromo, setWantPaidPromo] = useState(false) // PRO+ może wybrać płatną promocję
   const [fees, setFees] = useState({ addPrice: 0, promoPrice: 0, total: 0 })
+  const [savedDraftId, setSavedDraftId] = useState<number | null>(null)
+
+  // Funkcja do obsługi zapisania draft
+  const handleDraftSaved = (draftId: number) => {
+    setSavedDraftId(draftId)
+    alert(`Ogłoszenie zapisane jako draft (ID: ${draftId}). Po opłaceniu zostanie automatycznie opublikowane.`)
+  }
+
+  // Funkcja do obsługi pomyślnej publikacji
+  const handlePublishSuccess = () => {
+    // Wyczyść formularz
+    setStep(1)
+    setOfferType('szukam_pracownika')
+    setTitle('')
+    setDescription('')
+    setPrice('')
+    setCategory('')
+    setSubcategories([])
+    setLocation('')
+    setLocationProvince('')
+    setLocationCity('')
+    setLocationDetails('')
+    setContactName('')
+    setContactEmail('')
+    setContactPhone('')
+    setImages([])
+    setWantPromo(false)
+    setWantPaidPromo(false)
+    setSavedDraftId(null)
+    
+    // Informuj parent component o publikacji (opcjonalne)
+    onSubmit({ success: true, action: 'published' })
+    
+    // Odśwież stronę po 2 sekundach, żeby zaktualizować licznik
+    setTimeout(() => {
+      window.location.reload()
+    }, 2000)
+  }
+
+  // Funkcja do pobierania danych formularza
+  const getFormData = () => {
+    return {
+      offerType,
+      title,
+      description,
+      price: parseFloat(price) || 0,
+      category,
+      subcategories,
+      location,
+      contactName,
+      contactEmail,
+      contactPhone,
+      wantPromo
+    }
+  }
+
+  // Funkcja do określenia odpowiedniego przycisku promocji na podstawie ceny
+  const getPromoWithPublishButton = (price: number) => {
+    const formData = getFormData()
+    
+    if (price >= 0 && price <= 100) {
+      return <PublishWithPromo1Direct offerData={formData} onSuccess={handlePublishSuccess} />
+    } else if (price >= 101 && price <= 200) {
+      return <PublishWithPromo2 />
+    } else if (price >= 201 && price <= 1000) {
+      return <PublishWithPromo3 />
+    }
+    return null // Powyżej 1000zł brak promocji
+  }
+
+  // Funkcja do określenia ceny promocji + publikacji na podstawie ceny ogłoszenia
+  const getPromoWithPublishPrice = (price: number) => {
+    if (price >= 0 && price <= 100) {
+      return 10.00 // 6zł publikacja + 4zł promocja
+    } else if (price >= 101 && price <= 200) {
+      return 16.99 // 6zł publikacja + 10.99zł promocja
+    } else if (price >= 201 && price <= 1000) {
+      return 21.00 // 6zł publikacja + 15zł promocja
+    }
+    return 0 // Powyżej 1000zł brak promocji
+  }
+
+  // Funkcja do określenia przycisku tylko promocji dla PRO users (bez publikacji)
+  const getPromoOnlyButton = (price: number) => {
+    if (price >= 0 && price <= 100) {
+      return <PromoButton1 />
+    } else if (price >= 101 && price <= 200) {
+      return <PromoButton2 />
+    } else if (price >= 201 && price <= 1000) {
+      return <PromoButton3 />
+    }
+    return null // Powyżej 1000zł brak promocji
+  }
+
+  // Funkcja do określenia ceny tylko promocji dla PRO users
+  const getPromoOnlyPrice = (price: number) => {
+    if (price >= 0 && price <= 100) {
+      return 4.00 // Tylko promocja
+    } else if (price >= 101 && price <= 200) {
+      return 10.99 // Tylko promocja
+    } else if (price >= 201 && price <= 1000) {
+      return 15.00 // Tylko promocja
+    }
+    return 0 // Powyżej 1000zł brak promocji
+  }
 
   useEffect(() => {
-    if (price && !isFirstOffer && !userHasPro) {
+    if (price && !isFirstOffer) {
       const priceNum = parseFloat(price) || 0
-      setFees(calculateFees(priceNum, wantPromo))
+      
+      if (userHasPro) {
+        // Użytkownicy PRO i PRO+ mają darmowe ogłoszenia
+        setFees({
+          addPrice: 0, // Darmowe ogłoszenia dla PRO/PRO+
+          promoPrice: userProType === 'PRO_PLUS' ? 0 : (wantPromo ? calculateFees(priceNum, true).promoPrice : 0), // PRO+ ma darmowe promocje
+          total: userProType === 'PRO_PLUS' ? 0 : (wantPromo ? calculateFees(priceNum, true).promoPrice : 0)
+        })
+      } else {
+        // Dla użytkowników bez PRO - standardowe opłaty
+        setFees(calculateFees(priceNum, wantPromo))
+      }
     } else {
       setFees({ addPrice: 0, promoPrice: 0, total: 0 })
     }
-  }, [price, wantPromo, isFirstOffer, userHasPro])
+  }, [price, wantPromo, isFirstOffer, userHasPro, userProType])
 
   // Aktualizuj lokalizację gdy zmienią się województwo/miasto/szczegóły
   useEffect(() => {
@@ -59,8 +186,19 @@ export default function AddOfferForm({ onSubmit, isFirstOffer = false, userHasPr
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      setImages(Array.from(e.target.files).slice(0, 7))
+      const newFiles = Array.from(e.target.files)
+      // Dodaj nowe pliki do istniejących, ale nie przekraczaj limitu 3
+      setImages(prev => {
+        const combined = [...prev, ...newFiles]
+        return combined.slice(0, 3)
+      })
     }
+    // Wyczyść input, żeby można było dodać te same pliki ponownie
+    e.target.value = ''
+  }
+
+  const removeImage = (indexToRemove: number) => {
+    setImages(prev => prev.filter((_, index) => index !== indexToRemove))
   }
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -78,7 +216,8 @@ export default function AddOfferForm({ onSubmit, isFirstOffer = false, userHasPr
       contactPhone,
       images,
       wantPromo,
-      fees: userHasPro || isFirstOffer ? { addPrice: 0, promoPrice: 0, total: 0 } : fees
+      fees: userHasPro || isFirstOffer ? { addPrice: 0, promoPrice: 0, total: 0 } : fees,
+      userProType
     }
     onSubmit(formData)
   }
@@ -207,6 +346,7 @@ export default function AddOfferForm({ onSubmit, isFirstOffer = false, userHasPr
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Np. Koszenie trawy w ogrodzie"
             required
+            style={{ color: 'white' }}
           />
         </div>
 
@@ -218,6 +358,7 @@ export default function AddOfferForm({ onSubmit, isFirstOffer = false, userHasPr
             placeholder="Opisz szczegółowo czego potrzebujesz lub co oferujesz..."
             rows={4}
             required
+            style={{ color: 'white' }}
           />
         </div>
 
@@ -296,14 +437,50 @@ export default function AddOfferForm({ onSubmit, isFirstOffer = false, userHasPr
         </div>
 
         <div className={styles.formGroup}>
-          <label>Zdjęcia (max 7)</label>
+          <label>Zdjęcia (1-3 zdjęcia)</label>
           <input
             type="file"
             multiple
             accept="image/*"
             onChange={handleImageUpload}
             className={styles.fileInput}
+            disabled={images.length >= 3}
           />
+          {images.length >= 3 && (
+            <small style={{ color: '#ffa500', marginTop: '5px', display: 'block' }}>
+              Maksymalnie 3 zdjęcia. Usuń jedno, żeby dodać nowe.
+            </small>
+          )}
+          
+          {images.length > 0 && (
+            <div className={styles.imagePreviewGrid}>
+              <small style={{ marginBottom: '10px', display: 'block' }}>
+                {images.length} z 3 zdjęć wybranych
+              </small>
+              <div className={styles.imagesList}>
+                {images.map((file, index) => (
+                  <div key={index} className={styles.imagePreviewItem}>
+                    <img
+                      src={URL.createObjectURL(file)}
+                      alt={`Podgląd ${index + 1}`}
+                      className={styles.imagePreview}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeImage(index)}
+                      className={styles.removeImageBtn}
+                      title="Usuń zdjęcie"
+                    >
+                      ×
+                    </button>
+                    <span className={styles.imageName}>
+                      {file.name.length > 20 ? file.name.substring(0, 17) + '...' : file.name}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
@@ -339,7 +516,7 @@ export default function AddOfferForm({ onSubmit, isFirstOffer = false, userHasPr
         </div>
 
         <div className={styles.formGroup}>
-          <label>Email *</label>
+          <label>Email * - wpisz email zgodny z emailem z używanego konta</label>
           <input
             type="email"
             value={contactEmail}
@@ -376,84 +553,202 @@ export default function AddOfferForm({ onSubmit, isFirstOffer = false, userHasPr
     </div>
   )
 
-  const renderStep6 = () => (
-    <div className={styles.step}>
-      <h2>Promocja i płatność</h2>
-      
-      {/* Sekcja promocji - tylko dla płatnych ogłoszeń */}
-      {!userHasPro && !isFirstOffer && (
-        <div className={styles.promoSection}>
-          <label className={styles.promoLabel}>
-            <input
-              type="checkbox"
-              checked={wantPromo}
-              onChange={(e) => setWantPromo(e.target.checked)}
-            />
-            <span>Chcę promować to ogłoszenie (+{fees.promoPrice.toFixed(2)} zł)</span>
-          </label>
-        </div>
-      )}
+  const renderStep6 = () => {
+    const priceValue = parseFloat(price || '0')
+    const publishPrice = 6.00 // Stała cena publikacji
+    const promoWithPublishPrice = getPromoWithPublishPrice(priceValue)
+    const isPromoAvailable = priceValue <= 1000
 
-      <div className={styles.pricingSummary}>
-        <h3>Podsumowanie kosztów</h3>
+    return (
+      <div className={`${styles.step} ${styles.step6}`}>
+        <h2>Publikacja ogłoszenia</h2>
         
-        {/* Pierwsze ogłoszenie - DARMOWE */}
-        {isFirstOffer && (
-          <div className={styles.freeOffer}>
-            <div className={styles.freeOfferIcon}>🎉</div>
-            <div className={styles.freeOfferText}>
-              <h4>Twoje pierwsze ogłoszenie jest DARMOWE!</h4>
-              <p>Publikuj bez żadnych opłat. To nasza forma powitania nowych użytkowników na MicroJobs. Kolejne ogłoszenia będą płatne zgodnie z cennikiem, ale pierwsze dodajesz za darmo!</p>
-            </div>
+        {savedDraftId && (
+          <div style={{
+            backgroundColor: '#e7f5e7',
+            border: '2px solid #4caf50',
+            borderRadius: '8px',
+            padding: '15px',
+            marginBottom: '20px'
+          }}>
+            <h4 style={{ color: '#2e7d2e', margin: '0 0 10px 0' }}>✅ Ogłoszenie zapisane!</h4>
+            <p style={{ margin: '0', color: '#2e7d2e' }}>
+              Twoje ogłoszenie (ID: {savedDraftId}) zostało zapisane i będzie opublikowane automatycznie po opłaceniu.
+            </p>
+          </div>
+        )}
+
+        {/* Banner informujący o korzyściach PRO/PRO+ */}
+        {userHasPro && (
+          <div style={{
+            background: 'linear-gradient(135deg, #FFD700, #FFA500, #FF8C00)', // Złoty gradient
+            border: '2px solid #FFD700',
+            borderRadius: '12px',
+            padding: '15px',
+            marginBottom: '20px',
+            position: 'relative',
+            overflow: 'hidden',
+            boxShadow: '0 4px 12px rgba(255, 215, 0, 0.3)'
+          }}>
+            {/* Konfetti animacja */}
+            <div style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: `
+                radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.8) 2px, transparent 2px),
+                radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.8) 2px, transparent 2px),
+                radial-gradient(circle at 40% 40%, rgba(255, 215, 0, 0.8) 2px, transparent 2px),
+                radial-gradient(circle at 60% 60%, rgba(255, 165, 0, 0.8) 2px, transparent 2px),
+                radial-gradient(circle at 90% 90%, rgba(255, 255, 255, 0.8) 2px, transparent 2px),
+                radial-gradient(circle at 10% 10%, rgba(255, 215, 0, 0.8) 2px, transparent 2px)
+              `,
+              backgroundSize: '50px 50px',
+              animation: 'confetti-fall 3s infinite linear',
+              pointerEvents: 'none'
+            }}></div>
+            <h4 style={{ 
+              color: '#2c1810', 
+              margin: '0 0 10px 0', 
+              fontWeight: 'bold',
+              textShadow: '0 1px 2px rgba(255, 255, 255, 0.5)',
+              position: 'relative',
+              zIndex: 1
+            }}>
+              🌟 Konto {userProType} - Korzyści Premium!
+            </h4>
+            <p style={{ 
+              margin: '0', 
+              color: '#2c1810',
+              fontWeight: '600',
+              position: 'relative',
+              zIndex: 1
+            }}>
+              {userProType === 'PRO_PLUS' 
+                ? 'Masz darmowe publikacje i promocje! Możesz też wybrać płatną promocję jeśli nie chcesz wykorzystywać limitu.'
+                : 'Masz darmowe publikacje! Promocje są płatne lub możesz je otrzymać w ramach subskrypcji.'
+              }
+            </p>
           </div>
         )}
         
-        {/* Użytkownik PRO */}
-        {userHasPro && !isFirstOffer && (
-          <div className={styles.proUser}>
-            <div className={styles.proUserIcon}>⭐</div>
-            <div className={styles.proUserText}>
-              <h4>Użytkownik PRO</h4>
-              <p>Dodawanie ogłoszeń bez dodatkowych opłat</p>
+        <div className={styles.publishOptions}>
+          <div className={styles.optionSection}>
+            <h4 className={styles.optionTitle}>
+              {userHasPro ? 'Darmowa publikacja (PRO)' : isFirstOffer ? 'Darmowa publikacja (pierwsze ogłoszenie)' : 'Zwykła publikacja'}
+            </h4>
+            <div className={styles.priceInfo}>
+              <span className={styles.priceAmount}>
+                {userHasPro || isFirstOffer ? 'DARMOWE' : '6 zł'}
+              </span>
+              <span className={styles.priceDescription}>Publikacja na 30 dni</span>
             </div>
-          </div>
-        )}
-        
-        {/* Standardowe opłaty */}
-        {!isFirstOffer && !userHasPro && (
-          <div className={styles.feeBreakdown}>
-            <div className={styles.feeItem}>
-              <span>Opłata za ogłoszenie:</span>
-              <span>{fees.addPrice.toFixed(2)} zł</span>
-            </div>
-            {wantPromo && (
-              <div className={styles.feeItem}>
-                <span>Promocja:</span>
-                <span>{fees.promoPrice.toFixed(2)} zł</span>
-              </div>
+            {userHasPro || isFirstOffer ? (
+              <PublishButtonFree offerData={getFormData()} onPublishSuccess={handlePublishSuccess} />
+            ) : (
+              <PublishButtonDirect offerData={getFormData()} onSuccess={handlePublishSuccess} />
             )}
-            <div className={styles.feeTotal}>
-              <span>Razem:</span>
-              <span>{fees.total.toFixed(2)} zł</span>
-            </div>
           </div>
-        )}
-      </div>
 
-      <div className={styles.stepButtons}>
-        <button type="button" className={styles.backBtn} onClick={() => setStep(5)}>
-          Wstecz
-        </button>
-        <button 
-          type="submit" 
-          className={styles.submitBtn}
-          onClick={handleSubmit}
-        >
-          {isFirstOffer || userHasPro ? 'Opublikuj ogłoszenie DARMOWO' : fees.total > 0 ? `Zapłać ${fees.total.toFixed(2)} zł i opublikuj` : 'Opublikuj ogłoszenie'}
-        </button>
+          {isPromoAvailable && (
+            <div className={styles.optionSection}>
+              {/* Checkbox promocji */}
+              <div className={styles.promoCheckbox}>
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={wantPromo}
+                    onChange={(e) => setWantPromo(e.target.checked)}
+                  />
+                  <span>Chcę promować to ogłoszenie</span>
+                </label>
+              </div>
+
+              {wantPromo && (
+                <div className={styles.promoOption}>
+                  {/* Opcje promocji dla PRO+ */}
+                  {userProType === 'PRO_PLUS' && (
+                    <div style={{ marginBottom: '15px' }}>
+                      <div style={{ marginBottom: '10px' }}>
+                        <label style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
+                          <input
+                            type="radio"
+                            name="promoType"
+                            checked={!wantPaidPromo}
+                            onChange={() => setWantPaidPromo(false)}
+                          />
+                          <span style={{ color: '#333', fontSize: '16px' }}>
+                            Użyj darmowej promocji (PRO+)
+                          </span>
+                        </label>
+                        <label style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                          <input
+                            type="radio"
+                            name="promoType"
+                            checked={wantPaidPromo}
+                            onChange={() => setWantPaidPromo(true)}
+                          />
+                          <span style={{ color: '#333', fontSize: '16px' }}>
+                            Płatna promocja (bez wykorzystywania limitu)
+                          </span>
+                        </label>
+                      </div>
+                    </div>
+                  )}
+
+                  <h4 className={styles.optionTitle}>
+                    {userHasPro && wantPaidPromo ? 'Promocja (bez publikacji)' : 'Publikacja + Promocja'}
+                  </h4>
+                  <div className={styles.priceInfo}>
+                    <span className={styles.priceAmount}>
+                      {userProType === 'PRO_PLUS' && !wantPaidPromo 
+                        ? 'DARMOWE' 
+                        : userHasPro && wantPaidPromo
+                        ? `${getPromoOnlyPrice(priceValue)} zł`
+                        : `${promoWithPublishPrice} zł`
+                      }
+                    </span>
+                    <span className={styles.priceDescription}>
+                      {userHasPro && wantPaidPromo 
+                        ? 'Tylko promocja (publikacja jest darmowa dla PRO)'
+                        : 'Publikacja + promocja (wyświetlane wyżej w wynikach)'
+                      }
+                    </span>
+                  </div>
+                  
+                  {/* Przyciski promocji */}
+                  {userProType === 'PRO_PLUS' && !wantPaidPromo ? (
+                    <PublishWithPromoFree offerData={getFormData()} onPublishSuccess={handlePublishSuccess} />
+                  ) : userHasPro && !wantPaidPromo ? (
+                    <PublishButtonDirect offerData={getFormData()} onSuccess={handlePublishSuccess} />
+                  ) : userHasPro && wantPaidPromo ? (
+                    getPromoOnlyButton(priceValue)
+                  ) : (
+                    getPromoWithPublishButton(priceValue)
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+
+          {!isPromoAvailable && (
+            <div className={styles.noPromoInfo}>
+              <p>Promocja dostępna tylko dla ofert do 1000 zł</p>
+            </div>
+          )}
+        </div>
+        
+        {/* Przycisk Wstecz w kroku 6 */}
+        <div className={styles.stepButtons}>
+          <button type="button" className={styles.backBtn} onClick={() => setStep(5)}>
+            Wstecz
+          </button>
+        </div>
       </div>
-    </div>
-  )
+    )
+  }
 
   return (
     <form className={styles.addOfferForm}>

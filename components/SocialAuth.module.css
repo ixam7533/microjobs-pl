@@ -1,0 +1,314 @@
+/* SocialAuth.module.css */
+
+.socialAuth {
+  margin: 20px 0;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  margin: 20px 0;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #e5e7eb, transparent);
+}
+
+.divider span {
+  padding: 0 15px;
+  background: var(--bg-color, #ffffff);
+  font-weight: 500;
+}
+
+.socialButtons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+/* Główny styl przycisku - okrągły i nowoczesny */
+.socialButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  height: 50px;
+  border: 2px solid #e5e7eb;
+  border-radius: 25px; /* Okrągły przycisk! */
+  background: #ffffff;
+  color: #374151;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.socialButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  border-color: #d1d5db;
+}
+
+.socialButton:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Specjalne style dla Google */
+.socialButton.google {
+  border-color: #ea4335;
+  background: linear-gradient(45deg, #ffffff, #fef7f7);
+}
+
+.socialButton.google:hover {
+  border-color: #ea4335;
+  background: linear-gradient(45deg, #ea4335, #d73527);
+  color: white;
+  box-shadow: 0 8px 25px rgba(234, 67, 53, 0.3);
+}
+
+/* Specjalne style dla Facebook */
+.socialButton.facebook {
+  border-color: #1877f2;
+  background: linear-gradient(45deg, #ffffff, #f0f7ff);
+}
+
+.socialButton.facebook:hover {
+  border-color: #1877f2;
+  background: linear-gradient(45deg, #1877f2, #166fe5);
+  color: white;
+  box-shadow: 0 8px 25px rgba(24, 119, 242, 0.3);
+}
+
+/* Specjalne style dla Apple */
+.socialButton.apple {
+  border-color: #333333;
+  background: linear-gradient(45deg, #ffffff, #f9f9f9);
+}
+
+.socialButton.apple:hover {
+  border-color: #333333;
+  background: linear-gradient(45deg, #000000, #333333);
+  color: white;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+/* Efekt shimmer dla demo przycisków */
+.socialButton.demo {
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+/* Loading spinner */
+.loadingContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.loadingSpinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #e5e7eb;
+  border-top: 2px solid #3b82f6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Demo notice */
+.demoNotice {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 15px;
+  padding: 12px;
+  background: #f3f4f6;
+  border-radius: 15px;
+  border: 1px solid #e5e7eb;
+}
+
+.demoIcon {
+  font-size: 20px;
+}
+
+.demoText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.demoText strong {
+  font-size: 14px;
+  color: #374151;
+}
+
+.demoText span {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+/* Toast notification */
+.toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  border: 1px solid #e5e7eb;
+  min-width: 300px;
+  max-width: 400px;
+  z-index: 1000;
+  animation: toastSlideIn 0.3s ease-out;
+}
+
+@keyframes toastSlideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.toastHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px 10px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.toastClose {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #6b7280;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background 0.2s;
+}
+
+.toastClose:hover {
+  background: #f3f4f6;
+}
+
+.toastBody {
+  padding: 0 20px 15px;
+  color: #6b7280;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Responsywność */
+@media (max-width: 640px) {
+  .socialButton {
+    height: 48px;
+    font-size: 15px;
+  }
+  
+  .toast {
+    left: 20px;
+    right: 20px;
+    min-width: auto;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .divider span {
+    background: #1f2937;
+  }
+  
+  .socialButton {
+    background: #1f2937;
+    color: #e5e7eb;
+    border-color: #374151;
+  }
+  
+  .socialButton.google {
+    background: linear-gradient(45deg, #1f2937, #2d1b1e);
+  }
+  
+  .socialButton.facebook {
+    background: linear-gradient(45deg, #1f2937, #1e2a3a);
+  }
+  
+  .socialButton.apple {
+    background: linear-gradient(45deg, #1f2937, #2a2a2a);
+  }
+  
+  .demoNotice {
+    background: #374151;
+    border-color: #4b5563;
+  }
+  
+  .toast {
+    background: #1f2937;
+    border-color: #374151;
+  }
+  
+  .toastHeader {
+    color: #e5e7eb;
+  }
+  
+  .toastClose {
+    color: #9ca3af;
+  }
+  
+  .toastClose:hover {
+    background: #374151;
+  }
+}

@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
+import { signOut } from 'next-auth/react'
 import styles from './Header.module.css'
 import ThemeSwitch from './ThemeSwitch'
 import PromotionCounter from './PromotionCounter'
+import ChatNotificationBadge from './ChatNotificationBadge'
 
 interface User {
   email: string
@@ -53,13 +55,19 @@ export default function Header() {
 
   const handleLogout = async () => {
     try {
+      // Wyloguj z własnego systemu JWT
       const res = await fetch('/api/auth/logout', { method: 'POST' })
       if (res.ok) {
         setUser(null)
-        router.replace('/')
       } else {
-        console.error('Logout failed:', res.status)
+        console.error('JWT Logout failed:', res.status)
       }
+      
+      // Wyloguj z NextAuth (logowanie społecznościowe)
+      await signOut({ redirect: false })
+      
+      // Przekieruj na stronę główną
+      router.replace('/')
     } catch (err) {
       console.error('Network error on logout:', err)
     }
@@ -108,9 +116,12 @@ export default function Header() {
         
 
         <nav className={styles.nav}>
-          <Link href="/pro" className={styles.proBtn}>
-            ⭐ PRO
-          </Link>
+          <div className={styles.proSection}>
+            <Link href="/pro" className={styles.proBtn}>
+              ⭐ PRO
+            </Link>
+            {user && <PromotionCounter />}
+          </div>
           {!user ? (
             <>
               <Link href="/login" className={styles.btn}>
@@ -122,13 +133,14 @@ export default function Header() {
             </>
           ) : (
             <>
-              <PromotionCounter />
               <Link href="/add-new" className={styles.btn}>
                 Dodaj ogłoszenie
               </Link>
-              <Link href="/profile" className={styles.btn}>
-                Mój profil
-              </Link>
+              <ChatNotificationBadge>
+                <Link href="/profile" className={styles.btn}>
+                  Mój profil
+                </Link>
+              </ChatNotificationBadge>
 
               <div className={styles.userMenu}>
                 <span className={styles.email}>{user.email}</span>
@@ -144,7 +156,7 @@ export default function Header() {
       {/* 3. Krótki hero */}
       <div className={styles.hero}>
         <h1>Zarabiaj w wolnej chwili</h1>
-        <p>Znajdź dorywcze prace w swoim mieście.</p>
+        <p>Prosto, lokalnie, efektywnie — szukaj i oferuj pracę.</p>
       </div>
 
       {/* 4. Fioletowa fala */}

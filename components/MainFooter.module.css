@@ -8,7 +8,7 @@
 }
 
 .container {
-  max-width: 1200px;
+  max-width: 1800px;
   margin: 0 auto;
   padding: 0 2rem;
 }
@@ -149,9 +149,17 @@
 }
 
 .copyright {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
   text-align: center;
   padding-top: 2rem;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+}
+
+.copyrightText {
+  flex: 1;
 }
 
 .copyright p {
@@ -163,6 +171,20 @@
 .copyright p:first-child {
   font-weight: 600;
   color: #9ca3af;
+}
+
+.bibleVerse {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  color: #ffffff;
+  font-family: 'Georgia', 'Times New Roman', serif;
+  font-size: 1.1rem;
+  font-weight: 400;
+  font-style: italic;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  opacity: 0.8;
+  transition: opacity 0.3s ease;
 }
 
 /* Responsywność */
@@ -244,5 +266,17 @@
   
   .disclaimerBox p, .disclaimerBox li {
     font-size: 0.9rem;
+  }
+
+  .copyright {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .bibleVerse {
+    position: static;
+    margin-top: 1rem;
+    font-size: 1rem;
   }
 }

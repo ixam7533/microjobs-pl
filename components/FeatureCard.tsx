@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useRouter } from 'next/router'
 import styles from './FeatureCard.module.css'
 import { FaHeart, FaRegHeart } from 'react-icons/fa'
 
@@ -27,6 +28,7 @@ export default function FeatureCard({
   onFavoriteChange,
   isPromoted = false
 }: FeatureCardProps) {
+  const router = useRouter()
   const [fav, setFav] = useState(isFavorite)
   const [isLoading, setIsLoading] = useState(false)
 
@@ -36,6 +38,18 @@ export default function FeatureCard({
 
   // Wybierz pierwsze dostępne zdjęcie
   const displayImage = images && images.length > 0 ? images[0] : image || '/house4k.jpg'
+
+  const handleCardClick = (e: React.MouseEvent) => {
+    // Sprawdź czy kliknięto środkowy przycisk lub Ctrl+klik
+    if (e.button === 1 || (e.button === 0 && e.ctrlKey)) {
+      // Otwórz w nowej karcie
+      e.preventDefault()
+      window.open(`/offer/${id}`, '_blank')
+    } else if (e.button === 0) {
+      // Normalny klik - wywołaj onClick callback (otwórz modal)
+      onClick?.()
+    }
+  }
 
   async function toggleFav(e: React.MouseEvent) {
     e.stopPropagation()
@@ -77,18 +91,24 @@ export default function FeatureCard({
   }
 
   return (
-    <div className={`${styles.card} ${isPromoted ? styles.promoted : ''}`} onClick={onClick}>
+    <div 
+      className={`${styles.card} ${isPromoted ? styles.promoted : ''}`} 
+      onClick={handleCardClick}
+      onMouseDown={handleCardClick}
+      style={{ cursor: 'pointer' }}
+    >
       <div className={styles.imageContainer}>
         <img src={displayImage} alt={title} className={styles.image} />
         {isPromoted && (
           <div className={styles.promotedBadge}>
-            ⭐ PROMOWANE
+            PROMOWANE
           </div>
         )}
         <button 
           className={styles.favBtn} 
           onClick={toggleFav}
           disabled={isLoading}
+          onMouseDown={(e) => e.stopPropagation()} // Zapobiega propagacji zdarzenia do karty
         >
           {fav ? (
             <FaHeart color="#e63946" />
@@ -101,6 +121,16 @@ export default function FeatureCard({
         <h3>{title}</h3>
         <div className={styles.price}>{typeof price === 'number' ? `${price} zł` : price}</div>
         <div className={styles.location}>{location}</div>
+        <div className={styles.actions}>
+          <a 
+            href={`/offer/${id}`}
+            className={styles.viewLink}
+            onClick={(e) => e.stopPropagation()}
+            title="Zobacz szczegóły ogłoszenia"
+          >
+            Zobacz szczegóły →
+          </a>
+        </div>
       </div>
     </div>
   )

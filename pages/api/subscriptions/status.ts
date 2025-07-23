@@ -1,6 +1,7 @@
 // pages/api/subscriptions/status.ts
 import { NextApiRequest, NextApiResponse } from 'next'
-import { verifyToken } from '../../../lib/jwt'
+import { getToken } from 'next-auth/jwt'
+import { getUserFromRequest } from '../../../lib/auth'
 import prisma from '../../../lib/prisma'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -9,20 +10,31 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    const authHeader = req.headers.authorization
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return res.status(401).json({ error: 'Token required' })
+    let userInfo = null
+
+    // Sprawdź NextAuth token (logowanie społecznościowe)
+    const nextAuthToken = await getToken({ 
+      req,
+      secret: process.env.NEXTAUTH_SECRET 
+    })
+    if (nextAuthToken && nextAuthToken.email) {
+      userInfo = { email: nextAuthToken.email }
     }
 
-    const token = authHeader.split(' ')[1]
-    const decoded = verifyToken(token) as any
-    
-    if (!decoded || !decoded.userId) {
-      return res.status(401).json({ error: 'Invalid token' })
+    // Jeśli nie ma NextAuth token, sprawdź własny JWT token (logowanie email/hasło)
+    if (!userInfo) {
+      const jwtUser = await getUserFromRequest(req)
+      if (jwtUser) {
+        userInfo = jwtUser
+      }
+    }
+
+    if (!userInfo) {
+      return res.status(401).json({ error: 'Not authenticated' })
     }
 
     const user = await prisma.user.findUnique({
-      where: { id: decoded.userId },
+      where: { email: userInfo.email },
       include: {
         subscriptions: {
           where: { status: 'ACTIVE' },
@@ -38,6 +50,33 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const now = new Date()
     const hasActiveSubscription = user.subscriptionEnd && user.subscriptionEnd > now
+    const activeSubscription = user.subscriptions[0] // Najpewniej najnowsza aktywna subskrypcja
+    
+    // Oblicz limit promocji na podstawie typu subskrypcji
+    let promotionsLimit = 0
+    if (hasActiveSubscription && user.subscriptionType) {
+      switch (user.subscriptionType) {
+        case 'PRO':
+          promotionsLimit = 1 // 1 darmowe promowanie miesięcznie dla PRO
+          break
+        case 'PRO_PLUS':
+          promotionsLimit = 3 // 3 darmowe promowania miesięcznie dla PRO+
+          break
+        default:
+          promotionsLimit = 0
+      }
+    }
+    
+    // Debug logging
+    console.log('🔍 Subscription status check:', {
+      userId: user.id,
+      email: user.email,
+      subscriptionType: user.subscriptionType,
+      promotionsUsed: user.promotionsUsed,
+      promotionsLimit: promotionsLimit,
+      hasActiveSubscription,
+      subscriptionEnd: user.subscriptionEnd
+    })
     
     res.status(200).json({
       success: true,
@@ -47,8 +86,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         startDate: user.subscriptionStart,
         endDate: user.subscriptionEnd,
         promotionsUsed: user.promotionsUsed,
-        promotionsLimit: user.promotionsLimit,
+        promotionsLimit: promotionsLimit,
         emailReminder: user.emailReminder,
+        autoRenew: activeSubscription ? activeSubscription.autoRenew : false,
         daysRemaining: hasActiveSubscription ? Math.ceil((user.subscriptionEnd!.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)) : 0
       }
     })

@@ -112,6 +112,13 @@
   gap: 0.75rem;
 }
 
+.proSection {
+  display: flex;
+  align-items: center;
+  position: relative;
+  gap: 0.25rem;
+}
+
 .btn {
   padding: 0.4rem 0.8rem;    /* nieco mniejsze przyciski */
   background: var(--color-primary);

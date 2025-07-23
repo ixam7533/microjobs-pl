@@ -33,29 +33,37 @@ if (hasFacebookKeys) {
 
 console.log('NextAuth providers:', providers.map(p => p.id))
 
-export default NextAuth({
+export const authOptions = {
   adapter: PrismaAdapter(prisma),
   providers,
   session: {
-    strategy: 'jwt',
+    strategy: 'jwt' as const,
   },
+  secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
-    async jwt({ token, account, profile }) {
-      if (account) {
-        token.accessToken = account.access_token
+    async jwt(params: any) {
+      if (params.account) {
+        params.token.accessToken = params.account.access_token
       }
-      return token
+      return params.token
     },
-    async session({ session, token }) {
-      session.accessToken = token.accessToken as string
-      return session
+    async session(params: any) {
+      params.session.accessToken = params.token.accessToken as string
+      return params.session
     },
-    async signIn({ user, account, profile, email, credentials }) {
+    async signIn(params: any) {
+      // Zawsze pozwalaj na logowanie
       return true
+    },
+    async redirect({ url, baseUrl }: any) {
+      // Po udanym logowaniu przekieruj na stronę główną
+      return baseUrl
     },
   },
   pages: {
     signIn: '/login',
-    error: '/login',
+    error: '/login', // W przypadku błędu też przekieruj na login
   },
-})
+}
+
+export default NextAuth(authOptions)

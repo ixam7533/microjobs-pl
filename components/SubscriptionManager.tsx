@@ -30,16 +30,8 @@ export default function SubscriptionManager({ onSubscriptionChange }: Subscripti
 
   const fetchSubscriptionStatus = async () => {
     try {
-      const token = document.cookie.split(';').find(row => row.startsWith('token='))?.split('=')[1]
-      if (!token) {
-        setLoading(false)
-        return
-      }
-
       const response = await fetch('/api/subscriptions/status', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
+        credentials: 'include'
       })
 
       if (response.ok) {
@@ -56,18 +48,12 @@ export default function SubscriptionManager({ onSubscriptionChange }: Subscripti
   const handlePurchase = async (subscriptionType: string) => {
     setPurchasing(true)
     try {
-      const token = document.cookie.split(';').find(row => row.startsWith('token='))?.split('=')[1]
-      if (!token) {
-        alert('Musisz być zalogowany aby zakupić subskrypcję')
-        return
-      }
-
       const response = await fetch('/api/subscriptions/purchase', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Content-Type': 'application/json'
         },
+        credentials: 'include',
         body: JSON.stringify({ subscriptionType })
       })
 
@@ -97,14 +83,9 @@ export default function SubscriptionManager({ onSubscriptionChange }: Subscripti
 
     setCancelling(true)
     try {
-      const token = document.cookie.split(';').find(row => row.startsWith('token='))?.split('=')[1]
-      if (!token) return
-
       const response = await fetch('/api/subscriptions/cancel', {
         method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
+        credentials: 'include'
       })
 
       if (response.ok) {
@@ -157,18 +138,32 @@ export default function SubscriptionManager({ onSubscriptionChange }: Subscripti
             <h3>Promowanie ogłoszeń</h3>
             <div className={styles.counterDisplay}>
               <span className={styles.counterValue}>
-                {subscription.promotionsLimit - subscription.promotionsUsed}/{subscription.promotionsLimit}
+                {subscription.type === 'PRO' ? 
+                  'Promocje płatne' : 
+                  subscription.promotionsLimit === -1 || subscription.promotionsLimit === 0 ?
+                    'Nielimitowane' :
+                    `${Math.max(0, subscription.promotionsLimit - subscription.promotionsUsed)}/${subscription.promotionsLimit}`
+                }
               </span>
-              <span className={styles.counterLabel}>dostępnych promowań</span>
+              <span className={styles.counterLabel}>
+                {subscription.type === 'PRO' ? 
+                  'dostępne za opłatą' :
+                  subscription.promotionsLimit === -1 || subscription.promotionsLimit === 0 ?
+                    'darmowe promocje' :
+                    'dostępnych promowań'
+                }
+              </span>
             </div>
-            <div className={styles.promotionProgress}>
-              <div 
-                className={styles.progressBar}
-                style={{ 
-                  width: `${((subscription.promotionsLimit - subscription.promotionsUsed) / subscription.promotionsLimit) * 100}%` 
-                }}
-              />
-            </div>
+            {subscription.type !== 'PRO' && subscription.promotionsLimit > 0 && (
+              <div className={styles.promotionProgress}>
+                <div 
+                  className={styles.progressBar}
+                  style={{ 
+                    width: `${Math.max(0, ((subscription.promotionsLimit - subscription.promotionsUsed) / subscription.promotionsLimit) * 100)}%` 
+                  }}
+                />
+              </div>
+            )}
           </div>
 
           <div className={styles.subscriptionActions}>
@@ -202,18 +197,18 @@ export default function SubscriptionManager({ onSubscriptionChange }: Subscripti
                 ))}
               </ul>
               <button 
-                onClick={() => handlePurchase('PRO')}
+                onClick={() => window.location.href = '/pro'}
                 disabled={purchasing}
                 className={styles.purchaseButton}
               >
-                {purchasing ? 'Przetwarzanie...' : 'Wybierz PRO'}
+                Kup PRO
               </button>
             </div>
 
             <div className={styles.pricingCard}>
               <h3>Wersja PRO+</h3>
               <div className={styles.price}>
-                <span className={styles.priceAmount}>50</span>
+                <span className={styles.priceAmount}>25</span>
                 <span className={styles.priceCurrency}>zł</span>
                 <span className={styles.pricePeriod}>/miesiąc</span>
               </div>
@@ -226,11 +221,11 @@ export default function SubscriptionManager({ onSubscriptionChange }: Subscripti
                 ))}
               </ul>
               <button 
-                onClick={() => handlePurchase('PRO_PLUS')}
+                onClick={() => window.location.href = '/pro'}
                 disabled={purchasing}
                 className={styles.purchaseButton}
               >
-                {purchasing ? 'Przetwarzanie...' : 'Wybierz PRO+'}
+                Kup PRO+
               </button>
             </div>
           </div>

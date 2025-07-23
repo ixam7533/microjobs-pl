@@ -41,11 +41,10 @@ export default function AddAdvertisementPage() {
         const data = await response.json()
         if (data.user) {
           setUser(data.user)
-          // Sprawdź czy to pierwsze ogłoszenie
-          const offersResponse = await fetch('/api/offers')
+          // Sprawdź czy to pierwsze ogłoszenie - użyj dedykowanego endpointu
+          const offersResponse = await fetch('/api/auth/my-offers')
           const offersData = await offersResponse.json()
-          const userOffers = offersData.filter((offer: any) => offer.ownerEmail === data.user.email)
-          setIsFirstOffer(userOffers.length === 0)
+          setIsFirstOffer((offersData.offers || []).length === 0)
         }
       } catch (error) {
         console.error('Błąd pobierania danych użytkownika:', error)
@@ -98,6 +97,36 @@ export default function AddAdvertisementPage() {
 
   const handleSubmit = async (formData: any) => {
     try {
+      // Sprawdź czy to publikacja przez system PRO/PRO+
+      if (formData.success && formData.action === 'published') {
+        // To jest powiadomienie o udanej publikacji z systemu PRO/PRO+
+        console.log('✅ Ogłoszenie PRO/PRO+ zostało opublikowane')
+        return
+      }
+
+      // Sprawdź czy użytkownik ma PRO i nie pokazuj alertu o płatności
+      const userHasPro = user?.proType === 'PRO' || user?.proType === 'PRO_PLUS'
+      
+      console.log('🔍 Sprawdzanie PRO status:', {
+        proType: user?.proType,
+        userHasPro,
+        isFirstOffer,
+        userId: user?.id
+      })
+      
+      if (!userHasPro && !isFirstOffer) {
+        // Tylko dla użytkowników bez PRO pokazuj alert o płatności
+        console.log('❌ Pokazuję alert o płatności - brak PRO i nie pierwsze ogłoszenie')
+        alert('⚠️ Wszystkie ogłoszenia wymagają opłacenia przez przyciski płatności w ostatnim kroku. Użyj przycisków "Publikuj za 6 zł" lub "Publikuj + Promuj" aby kontynuować.')
+        return
+      }
+      
+      // Dla użytkowników PRO/PRO+ lub pierwszego ogłoszenia - pozwól na publikację bez alertu
+      console.log('✅ Użytkownik PRO/PRO+ lub pierwsze ogłoszenie - bez alertu płatności')
+      return
+      
+      // Stary kod zostaje tutaj do ewentualnego przyszłego użycia
+      // ale nie będzie wykonywany z powodu return powyżej {
       // Jeśli to płatne ogłoszenie, najpierw przejdź do płatności
       if (formData.fees.total > 0) {
         // Tutaj będzie integracja z systemem płatności
@@ -180,6 +209,7 @@ export default function AddAdvertisementPage() {
           onSubmit={handleSubmit}
           isFirstOffer={isFirstOffer}
           userHasPro={user?.hasPro || false}
+          userProType={user?.proType || null}
         />
       </div>
     </div>

@@ -14,7 +14,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ChatSummary[] | { error: string }>
 ) {
-  const userAuth = getUserFromRequest(req)
+  const userAuth = await getUserFromRequest(req)
   if (!userAuth) return res.status(401).json({ error: 'Unauthorized' })
 
   const user = await prisma.user.findUnique({
@@ -32,7 +32,14 @@ export default async function handler(
       }
     }
   })
-  if (!user) return res.status(404).json({ error: 'User not found' })
+  
+  console.log('💬 Chat API - userAuth:', userAuth.email)
+  console.log('💬 Chat API - user found:', !!user)
+  
+  if (!user) {
+    console.error('💬 Chat API - User not found in database:', userAuth.email)
+    return res.status(404).json({ error: 'User not found' })
+  }
 
   type CP = typeof user.chatParticipants[number]
   type P  = CP['chat']['participants'][number]

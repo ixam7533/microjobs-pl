@@ -32,14 +32,13 @@ export default function RatingModal({
     setIsSubmitting(true)
 
     try {
-      const token = document.cookie.split(';').find(row => row.startsWith('token='))?.split('=')[1]
-      
+      // Wyślij request - token będzie automatycznie zawarty w cookies httpOnly
       const response = await fetch('/api/ratings/add', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Content-Type': 'application/json'
         },
+        credentials: 'include', // ważne dla cookies
         body: JSON.stringify({
           reviewedEmail: userEmail,
           rating,

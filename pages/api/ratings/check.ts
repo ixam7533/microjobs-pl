@@ -43,7 +43,7 @@ export default async function handler(
     }
 
     // Sprawdź czy ocena już istnieje
-    const existingRating = await (prisma as any).rating.findFirst({
+    const existingRating = await prisma.rating.findFirst({
       where: {
         reviewerId: reviewer.id,
         reviewedId: reviewed.id,

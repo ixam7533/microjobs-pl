@@ -23,20 +23,20 @@
   border-radius: 16px;
   border: 1px solid var(--border-color);
   box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-  color: var(--text-color);
+  color: #333333;
   z-index: 0;
 }
 
 .glassForm h2 {
   margin-bottom: 1.5rem;
   font-size: 1.75rem;
-  color: var(--text-color);
+  color: #333333;
 }
 
 .glassForm label,
 .glassForm input::placeholder,
 .glassForm textarea::placeholder {
-  color: var(--text-color);
+  color: #333333;
   opacity: 0.8;
 }
 
@@ -49,7 +49,7 @@
   border: 1px solid var(--border-color);
   border-radius: 8px;
   background: var(--card-bg);
-  color: var(--text-color);
+  color: #333333;
   margin-bottom: 0.5rem;
 }
 
@@ -72,7 +72,7 @@
   border: 1px solid var(--border-color);
   border-radius: 4px;
   background: transparent;
-  color: var(--text-color);
+  color: #333333;
   cursor: pointer;
   transition: all 0.2s ease;
 }

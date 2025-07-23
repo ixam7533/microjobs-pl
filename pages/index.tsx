@@ -123,13 +123,17 @@ export default function Home() {
   const [searchTerm, setSearchTerm] = useState<string>('')
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [offerType, setOfferType] = useState<string>('')
+  const [initialOfferId, setInitialOfferId] = useState<string | null>(null)
 
   // Obsługa parametru category z URL
   useEffect(() => {
     if (router.query.category && typeof router.query.category === 'string') {
       setMainCat(router.query.category)
     }
-  }, [router.query.category])
+    if (router.query.offerId && typeof router.query.offerId === 'string') {
+      setInitialOfferId(router.query.offerId)
+    }
+  }, [router.query.category, router.query.offerId])
 
   useEffect(() => {
     // Nasłuchuj zmian motywu
@@ -464,7 +468,7 @@ export default function Home() {
               </button>
             </div>
             
-            <OffersSection offers={offers} />
+            <OffersSection offers={offers} initialOfferId={initialOfferId} />
             
             {/* Paginacja */}
             <Pagination
@@ -475,14 +479,6 @@ export default function Home() {
               hasPrevPage={pagination.hasPrevPage}
             />
           </section>
-
-          <aside className={styles.ad}>
-            <Advertisement type="sidebar" />
-            <div className={styles.adBox}>
-              <h3>Reklama</h3>
-              <p>Twoje miejsce na baner</p>
-            </div>
-          </aside>
         </div>
       </main>
       

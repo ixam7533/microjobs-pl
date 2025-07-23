@@ -1,0 +1,34 @@
+💬 SYSTEM CZATU - DIAGNOSTYKA
+=============================
+📡 Sprawdzanie serwera...
+✅ Serwer działa
+
+🗄️ Sprawdzanie bazy danych...
+💬 Chaty: 1
+📝 Wiadomości: 0
+👥 Uczestnicy: 2
+
+🔐 Test logowania...
+Odpowiedź logowania: {"email":"test@example.com"}
+
+🧪 Test API czatu (bez autoryzacji)...
+Bez autoryzacji: {"error":"Unauthorized"}
+
+🧪 Test API czatu (z autoryzacją)...
+Z autoryzacją: {"chatId":1}
+
+🔍 Pokaż istniejące chaty:
+id|participants
+1|jan@example.com,test@example.com
+
+📋 INSTRUKCJE NAPRAWY:
+1. Zaloguj się jako test@example.com (hasło: test123)
+2. Otwórz DevTools (F12) i zobacz zakładkę Console
+3. Kliknij na ofertę i 'Napisz wiadomość'
+4. Sprawdź logi w konsoli
+
+🐛 Możliwe problemy:
+- Token nie jest zapisywany w cookies
+- Problem z funkcją handleChatStart
+- Błąd w API /api/auth/chats/new
+- Problem z przekierowaniem do /profile

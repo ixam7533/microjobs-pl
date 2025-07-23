@@ -183,7 +183,12 @@ export default function UserProfile() {
             <div className={styles.offersGrid}>
               {offers.length > 0 ? (
                 offers.map((offer) => (
-                  <div key={offer.id} className={styles.offerCard}>
+                  <div 
+                    key={offer.id} 
+                    className={styles.offerCard}
+                    onClick={() => window.open(`/offer/${offer.id}`, '_blank')}
+                    style={{ cursor: 'pointer' }}
+                  >
                     <div className={styles.offerImage}>
                       <img src={offer.image || '/house4k.jpg'} alt={offer.title} />
                       <div className={styles.offerStatus}>

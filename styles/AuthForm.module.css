@@ -20,13 +20,13 @@
   border: 1px solid var(--border-color);
   border-radius: 8px;
   background: var(--card-bg);
-  color: var(--text-color);
+  color: #333333;
   font-size: 1rem;
 }
 
 .form input[type="email"]::placeholder,
 .form input[type="password"]::placeholder {
-  color: var(--text-color);
+  color: #333333;
   opacity: 0.6;
 }
 
@@ -36,7 +36,7 @@
   align-items: center;
   gap: 0.5rem;
   font-size: 0.9rem;
-  color: var(--text-color);
+  color: #333333;
 }
 
 /* przycisk submit */

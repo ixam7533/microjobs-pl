@@ -10,15 +10,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    const authHeader = req.headers.authorization
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    // Pobierz token z cookies zamiast nagłówka Authorization
+    const token = req.cookies.token
+    
+    if (!token) {
       return res.status(401).json({ error: 'Token required' })
     }
 
-    const token = authHeader.split(' ')[1]
     const decoded = verifyToken(token) as any
     
-    if (!decoded || !decoded.userId) {
+    if (!decoded || !decoded.id) {
       return res.status(401).json({ error: 'Invalid token' })
     }
 
@@ -29,7 +30,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     const user = await prisma.user.findUnique({
-      where: { id: decoded.userId }
+      where: { id: decoded.id }
     })
 
     if (!user) {
@@ -47,29 +48,37 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const endDate = new Date(startDate)
     endDate.setMonth(endDate.getMonth() + 1) // 1 month subscription
 
+    // Ustaw prawidłowy limit promocji
+    let promotionsLimit = 0
+    if (subscriptionType === 'PRO') {
+      promotionsLimit = 1 // PRO ma 1 promocję miesięcznie za opłatą
+    } else if (subscriptionType === 'PRO_PLUS') {
+      promotionsLimit = 3 // PRO+ ma 3 darmowe promocje miesięcznie
+    }
+
     // Update user with subscription
     await prisma.user.update({
-      where: { id: decoded.userId },
+      where: { id: decoded.id },
       data: {
         subscriptionType,
         subscriptionStart: startDate,
         subscriptionEnd: endDate,
         promotionsUsed: 0,
-        promotionsLimit: subscriptionData.promotions,
-        subscriptionId: `sub_${Date.now()}_${decoded.userId}` // Mock payment ID
+        promotionsLimit: promotionsLimit,
+        subscriptionId: `sub_${Date.now()}_${decoded.id}` // Mock payment ID
       }
     })
 
     // Create subscription record
     await prisma.subscription.create({
       data: {
-        userId: decoded.userId,
+        userId: decoded.id,
         type: subscriptionType,
         status: 'ACTIVE',
         startDate,
         endDate,
         autoRenew: true,
-        paymentId: `pay_${Date.now()}_${decoded.userId}`
+        paymentId: `pay_${Date.now()}_${decoded.id}`
       }
     })
 
@@ -80,7 +89,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         type: subscriptionType,
         startDate,
         endDate,
-        promotionsLimit: subscriptionData.promotions
+        promotionsLimit: promotionsLimit
       }
     })
 

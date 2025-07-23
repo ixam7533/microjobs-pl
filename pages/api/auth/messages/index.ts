@@ -8,7 +8,7 @@ const prisma = new PrismaClient()
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const user = getUserFromRequest(req)
+  const user = await getUserFromRequest(req)
   if (!user) return res.status(401).end()
 
   if (req.method === 'GET') {

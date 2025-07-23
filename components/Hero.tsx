@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import DailyBibleVerse from './DailyBibleVerse';
 
 export default function Hero() {
   return (
@@ -10,7 +11,8 @@ export default function Hero() {
         <p className="text-lg mb-8">
           Znajdź dorywcze prace w swoim mieście – koszenie trawy, sprzątanie auta i więcej.
         </p>
-      
+        
+        <DailyBibleVerse />
       </div>
     </section>
   );

@@ -1,0 +1,107 @@
+import Header from '../components/Header'
+import MainFooter from '../components/MainFooter'
+
+export default function Terms() {
+  return (
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <Header />
+      <main style={{ flex: '1', paddingTop: '80px', paddingBottom: '2rem' }}>
+          <div style={{ maxWidth: '1600px', margin: '0 auto', padding: '0 5%' }}>
+            <div style={{ backgroundColor: 'white', borderRadius: '12px', padding: '2rem', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}>
+              <h1 style={{ fontSize: '2rem', marginBottom: '2rem', color: '#000', textAlign: 'center' }}>
+                Regulamin serwisu MicroJobs
+              </h1>
+              
+              <section style={{ marginBottom: '2rem' }}>
+                <h2 style={{ fontSize: '1.5rem', marginBottom: '1rem', color: '#222' }}>1. Postanowienia ogólne</h2>
+                <p style={{ lineHeight: '1.8', color: '#000' }}>
+                  MicroJobs to platforma łącząca osoby szukające pracy z osobami oferującymi 
+                  drobne usługi i zlecenia. Korzystając z serwisu, akceptujesz niniejszy regulamin.
+                </p>
+                
+                <h3 style={{ fontSize: '1.2rem', marginTop: '1.5rem', marginBottom: '1rem', color: '#000' }}>Definicje:</h3>
+                <ul style={{ marginLeft: '1.5rem', lineHeight: '1.8' }}>
+                  <li><strong>Serwis</strong> - platforma internetowa MicroJobs dostępna pod adresem microjobs.pl</li>
+                  <li><strong>Użytkownik</strong> - osoba korzystająca z serwisu po rejestracji</li>
+                  <li><strong>Zleceniodawca</strong> - użytkownik publikujący oferty pracy</li>
+                  <li><strong>Wykonawca</strong> - użytkownik aplikujący na oferty</li>
+                </ul>
+              </section>
+              
+              <section style={{ marginBottom: '2rem' }}>
+                <h2 style={{ fontSize: '1.5rem', marginBottom: '1rem', color: '#222' }}>2. Rejestracja i konto użytkownika</h2>
+                <ul style={{ marginLeft: '1.5rem', lineHeight: '1.8' }}>
+                  <li>Rejestracja jest bezpłatna i dobrowolna</li>
+                  <li>Wymagane jest podanie prawdziwych danych</li>
+                  <li>Jeden użytkownik może mieć tylko jedno konto</li>
+                  <li>Hasło musi być bezpieczne i nie może być udostępniane</li>
+                  <li>Za wszystkie działania na koncie odpowiada właściciel</li>
+                </ul>
+              </section>
+              
+              <section style={{ marginBottom: '2rem' }}>
+                <h2 style={{ fontSize: '1.5rem', marginBottom: '1rem', color: '#222' }}>3. Zasady publikowania ogłoszeń</h2>
+                <p style={{ marginBottom: '1rem', lineHeight: '1.8', color: '#000' }}>
+                  Wszystkie ogłoszenia muszą spełniać określone wymagania jakościowe i prawne.
+                </p>
+                
+                <h3 style={{ fontSize: '1.2rem', marginBottom: '1rem', color: '#000' }}>Wymagania:</h3>
+                <ul style={{ marginLeft: '1.5rem', lineHeight: '1.8' }}>
+                  <li>Ogłoszenia muszą być zgodne z prawem polskim</li>
+                  <li>Opisy muszą być prawdziwe i nie wprowadzać w błąd</li>
+                  <li>Zdjęcia nie mogą zawierać treści przemocy lub nieodpowiednich dla nieletnich</li>
+                  <li>Ceny muszą być podane jasno i czytelnie</li>
+                </ul>
+              </section>
+              
+              <section style={{ marginBottom: '2rem' }}>
+                <h2 style={{ fontSize: '1.5rem', marginBottom: '1rem', color: '#222' }}>4. Odpowiedzialność użytkowników</h2>
+                <ul style={{ marginLeft: '1.5rem', lineHeight: '1.8' }}>
+                  <li>Użytkownicy są w pełni odpowiedzialni za swoje działania</li>
+                  <li>MicroJobs nie bierze odpowiedzialności za jakość świadczonych usług</li>
+                  <li>Platforma nie odpowiada za szkody powstałe podczas wykonywania pracy</li>
+                  <li>Zalecamy weryfikację tożsamości przed podjęciem współpracy</li>
+                </ul>
+              </section>
+              
+              <section style={{ marginBottom: '2rem' }}>
+                <h2 style={{ fontSize: '1.5rem', marginBottom: '1rem', color: '#222' }}>5. Płatności i opłaty</h2>
+                <ul style={{ marginLeft: '1.5rem', lineHeight: '1.8' }}>
+                  <li>Pierwsze ogłoszenie jest darmowe</li>
+                  <li>Kolejne ogłoszenia kosztują 6 zł</li>
+                  <li>Promocja ogłoszeń od 3 zł (w zależności od wartości)</li>
+                  <li>Subskrypcje PRO: 29 zł/miesiąc, PRO+: 49 zł/miesiąc</li>
+                  <li>Płatności są nieodwracalne</li>
+                </ul>
+              </section>
+              
+              <section style={{ marginBottom: '2rem' }}>
+                <h2 style={{ fontSize: '1.5rem', marginBottom: '1rem', color: '#222' }}>6. Naruszenia i sankcje</h2>
+                <p style={{ marginBottom: '1rem', lineHeight: '1.6', color: '#000' }}>W przypadku naruszenia regulaminu możemy:</p>
+                <ul style={{ marginLeft: '1.5rem', lineHeight: '1.8' }}>
+                  <li>Usunąć naruszające ogłoszenie</li>
+                  <li>Zawiesić konto użytkownika</li>
+                  <li>Zablokować konto na stałe</li>
+                  <li>Przekazać sprawę organom ścigania w przypadku łamania prawa</li>
+                </ul>
+              </section>
+              
+              <section style={{ marginBottom: '2rem' }}>
+                <h2 style={{ fontSize: '1.5rem', marginBottom: '1rem', color: '#222' }}>7. Zmiany regulaminu</h2>
+                <p style={{ marginBottom: '1rem', lineHeight: '1.6', color: '#000' }}>Zastrzegamy sobie prawo do zmiany regulaminu. O istotnych zmianach poinformujemy użytkowników z 7-dniowym wyprzedzeniem.</p>
+              </section>
+              
+              <section>
+                <h2 style={{ fontSize: '1.5rem', marginBottom: '1rem', color: '#222' }}>8. Kontakt</h2>
+                <p style={{ lineHeight: '1.6', color: '#000' }}>
+                  W sprawach związanych z regulaminem skontaktuj się z nami: 
+                  <a href="mailto:microjobsj7@gmail.com" style={{ color: '#007bff' }}> microjobsj7@gmail.com</a>
+                </p>
+              </section>
+            </div>
+          </div>
+      </main>
+      <MainFooter />
+    </div>
+  )
+}

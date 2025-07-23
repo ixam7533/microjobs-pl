@@ -9,7 +9,7 @@ export default async function handler(
   res: NextApiResponse
 ) {
   // 1) Authenticate
-  const user = getUserFromRequest(req)
+  const user = await getUserFromRequest(req)
   if (!user) return res.status(401).json({ error: 'Unauthorized' })
 
   // 2) Parse & validate chatId

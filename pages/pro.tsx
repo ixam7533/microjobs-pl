@@ -1,6 +1,8 @@
 // pages/pro.tsx
 import { useState, useEffect } from 'react'
 import Header from '../components/Header'
+import ShopifyButton from '../components/ShopifyButton'
+import ShopifyButtonProPlus from '../components/ShopifyButtonProPlus'
 import { PRO_VERSIONS } from '../lib/pricing'
 import styles from '../styles/Pro.module.css'
 
@@ -8,8 +10,12 @@ type Theme = 'dark' | 'light' | 'night' | 'natura'
 
 export default function ProPage() {
   const [currentTheme, setCurrentTheme] = useState<Theme>('natura')
-  const [selectedPlan, setSelectedPlan] = useState<'PRO' | 'PRO_PLUS' | null>(null)
-  const [purchasing, setPurchasing] = useState(false)
+
+  const handlePurchaseComplete = () => {
+    alert('Subskrypcja została zakupiona pomyślnie!')
+    // Redirect to profile with subscription tab
+    window.location.href = '/profile?tab=subscription'
+  }
 
   useEffect(() => {
     // Nasłuchuj zmian motywu
@@ -72,42 +78,6 @@ export default function ProPage() {
     }
   }
 
-  const handlePurchase = async (planType: 'PRO' | 'PRO_PLUS') => {
-    setPurchasing(true)
-    try {
-      const token = document.cookie.split(';').find(row => row.startsWith('token='))?.split('=')[1]
-      if (!token) {
-        alert('Musisz być zalogowany aby zakupić subskrypcję')
-        window.location.href = '/login'
-        return
-      }
-
-      const response = await fetch('/api/subscriptions/purchase', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ subscriptionType: planType })
-      })
-
-      if (response.ok) {
-        const data = await response.json()
-        alert('Subskrypcja została zakupiona pomyślnie!')
-        // Redirect to profile with subscription tab
-        window.location.href = '/profile?tab=subscription'
-      } else {
-        const error = await response.json()
-        alert(error.error || 'Błąd podczas zakupu subskrypcji')
-      }
-    } catch (error) {
-      console.error('Error purchasing subscription:', error)
-      alert('Błąd podczas zakupu subskrypcji')
-    } finally {
-      setPurchasing(false)
-    }
-  }
-
   return (
     <div className={styles.page}>
       <Header />
@@ -146,13 +116,7 @@ export default function ProPage() {
                 ))}
               </div>
               
-              <button 
-                className={styles.planButton}
-                onClick={() => handlePurchase('PRO')}
-                disabled={purchasing}
-              >
-                {purchasing ? 'Trwa przetwarzanie...' : 'Wybierz PRO'}
-              </button>
+              <ShopifyButton />
             </div>
 
             {/* Plan PRO+ */}
@@ -175,13 +139,7 @@ export default function ProPage() {
                 ))}
               </div>
               
-              <button 
-                className={`${styles.planButton} ${styles.featuredButton}`}
-                onClick={() => handlePurchase('PRO_PLUS')}
-                disabled={purchasing}
-              >
-                {purchasing ? 'Trwa przetwarzanie...' : 'Wybierz PRO+'}
-              </button>
+              <ShopifyButtonProPlus />
             </div>
           </div>
 
@@ -209,18 +167,23 @@ export default function ProPage() {
                 <div className={styles.comparisonProPlus}>✓</div>
               </div>
               <div className={styles.comparisonRow}>
+                <div className={styles.comparisonFeature}>Darmowe promowanie (1/miesiąc)</div>
+                <div className={styles.comparisonPro}>✓</div>
+                <div className={styles.comparisonProPlus}>-</div>
+              </div>
+              <div className={styles.comparisonRow}>
                 <div className={styles.comparisonFeature}>Darmowe promowanie (3/miesiąc)</div>
                 <div className={styles.comparisonPro}>✗</div>
                 <div className={styles.comparisonProPlus}>✓</div>
               </div>
               <div className={styles.comparisonRow}>
-                <div className={styles.comparisonFeature}>Wyróżnione ramki</div>
+                <div className={styles.comparisonFeature}>Wyróżnione ramki wokół ogłoszeń</div>
                 <div className={styles.comparisonPro}>✗</div>
                 <div className={styles.comparisonProPlus}>✓</div>
               </div>
               <div className={styles.comparisonRow}>
                 <div className={styles.comparisonFeature}>Wsparcie techniczne</div>
-                <div className={styles.comparisonPro}>✗</div>
+                <div className={styles.comparisonPro}>✓</div>
                 <div className={styles.comparisonProPlus}>✓</div>
               </div>
             </div>

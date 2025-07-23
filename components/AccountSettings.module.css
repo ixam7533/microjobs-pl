@@ -11,13 +11,13 @@
 
 .settingsHeader h2 {
   margin: 0 0 10px 0;
-  color: var(--text-primary);
+  color: #333333;
   font-size: 2rem;
 }
 
 .settingsHeader p {
   margin: 0;
-  color: var(--text-secondary);
+  color: #333333;
   font-size: 1.1rem;
 }
 
@@ -72,7 +72,7 @@
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
-  color: var(--text-primary);
+  color: #333333;
   font-size: 1rem;
   text-align: left;
   display: flex;
@@ -101,7 +101,7 @@
 
 .section h3 {
   margin: 0 0 20px 0;
-  color: var(--text-primary);
+  color: #333333;
   font-size: 1.5rem;
 }
 
@@ -119,7 +119,7 @@
 
 .formGroup label {
   font-weight: 600;
-  color: var(--text-primary);
+  color: #333333;
   font-size: 0.9rem;
 }
 
@@ -130,7 +130,7 @@
   border-radius: 6px;
   font-size: 1rem;
   background: var(--input-bg);
-  color: var(--text-primary);
+  color: #333333;
   transition: border-color 0.2s ease;
 }
 
@@ -163,7 +163,7 @@
 
 .secondaryButton {
   background: var(--secondary-bg);
-  color: var(--text-primary);
+  color: #333333;
   border: 1px solid var(--border-color);
   padding: 12px 24px;
   border-radius: 6px;
@@ -206,7 +206,7 @@
 
 .preferenceGroup h4 {
   margin: 0 0 15px 0;
-  color: var(--text-primary);
+  color: #333333;
   font-size: 1.2rem;
 }
 
@@ -243,12 +243,12 @@
 
 .themeLabel {
   font-weight: 600;
-  color: var(--text-primary);
+  color: #333333;
   margin-bottom: 5px;
 }
 
 .themeDesc {
-  color: var(--text-secondary);
+  color: #333333;
   font-size: 0.9rem;
 }
 
@@ -299,12 +299,12 @@
 
 .switchTitle {
   font-weight: 600;
-  color: var(--text-primary);
+  color: #333333;
   margin-bottom: 2px;
 }
 
 .switchDesc {
-  color: var(--text-secondary);
+  color: #333333;
   font-size: 0.9rem;
 }
 
@@ -322,12 +322,12 @@
 
 .infoItem label {
   font-weight: 600;
-  color: var(--text-secondary);
+  color: #333333;
   font-size: 0.9rem;
 }
 
 .infoValue {
-  color: var(--text-primary);
+  color: #333333;
   font-size: 1.1rem;
 }
 
@@ -362,7 +362,7 @@
 }
 
 .dangerZone p {
-  color: var(--text-secondary);
+  color: #333333;
   margin: 0 0 15px 0;
 }
 
@@ -382,12 +382,12 @@
 
 .dataItem h4 {
   margin: 0 0 10px 0;
-  color: var(--text-primary);
+  color: #333333;
 }
 
 .dataItem p {
   margin: 0 0 15px 0;
-  color: var(--text-secondary);
+  color: #333333;
   font-size: 0.9rem;
 }
 
@@ -440,7 +440,7 @@
 }
 
 .statLabel {
-  color: var(--text-secondary);
+  color: #333333;
   font-size: 0.9rem;
   font-weight: 500;
 }
@@ -470,5 +470,291 @@
   
   .settingsPanel {
     padding: 20px;
+  }
+}
+
+/* Subscription Styles */
+.subscriptionActive {
+  margin-bottom: 20px;
+}
+
+.subscriptionCard {
+  border: 2px solid var(--primary-color);
+  border-radius: 12px;
+  padding: 24px;
+  background: var(--background-primary);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.subscriptionHeader {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.subscriptionIcon {
+  font-size: 2rem;
+  background: linear-gradient(135deg, #ffd700, #ffed4e);
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.subscriptionInfo h4 {
+  margin: 0 0 8px 0;
+  color: #333333;
+  font-size: 1.25rem;
+}
+
+.subscriptionInfo p {
+  margin: 0;
+  color: #333333;
+}
+
+.subscriptionStatus {
+  margin-left: auto;
+}
+
+.activeBadge {
+  background: var(--success-bg);
+  color: var(--success-text);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.subscriptionDetails {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+  padding: 16px;
+  background: var(--background-secondary);
+  border-radius: 8px;
+}
+
+.detailItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.detailLabel {
+  color: #333333;
+  font-weight: 500;
+}
+
+.detailValue {
+  color: #333333;
+  font-weight: 600;
+}
+
+.detailValue.warning {
+  color: var(--warning-text);
+}
+
+.subscriptionFeatures h5 {
+  margin: 0 0 12px 0;
+  color: #333333;
+  font-size: 1.1rem;
+}
+
+.featuresList {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 24px 0;
+}
+
+.featureItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+  color: #333333;
+}
+
+.featureIcon {
+  color: var(--success-text);
+  font-weight: bold;
+}
+
+.subscriptionActions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.upgradeButton {
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.upgradeButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.subscribeButton, .subscribeButtonPrimary {
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+  margin-top: 16px;
+}
+
+.subscribeButtonPrimary {
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+}
+
+.subscribeButton:hover, .subscribeButtonPrimary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.subscriptionInactive {
+  text-align: center;
+}
+
+.noSubscriptionCard {
+  background: var(--background-secondary);
+  border-radius: 12px;
+  padding: 40px;
+  border: 2px dashed var(--border-color);
+}
+
+.noSubscriptionIcon {
+  font-size: 4rem;
+  margin-bottom: 16px;
+}
+
+.noSubscriptionCard h4 {
+  margin: 0 0 8px 0;
+  color: #333333;
+  font-size: 1.5rem;
+}
+
+.noSubscriptionCard p {
+  margin: 0 0 32px 0;
+  color: #333333;
+  font-size: 1.1rem;
+}
+
+.proPlans {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.planCard {
+  background: var(--background-primary);
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  padding: 24px;
+  text-align: center;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.planCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.planCard.recommended {
+  border-color: var(--primary-color);
+  background: linear-gradient(135deg, var(--background-primary), rgba(var(--primary-rgb), 0.05));
+}
+
+.recommendedBadge {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--primary-color);
+  color: white;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.planCard h5 {
+  margin: 0 0 12px 0;
+  color: #333333;
+  font-size: 1.25rem;
+}
+
+.planPrice {
+  font-size: 2rem;
+  font-weight: bold;
+  color: var(--primary-color);
+  margin-bottom: 20px;
+}
+
+.planFeatures {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 24px 0;
+  text-align: left;
+}
+
+.planFeatures li {
+  padding: 8px 0;
+  color: #333333;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.planFeatures li:last-child {
+  border-bottom: none;
+}
+
+.planFeatures li:before {
+  content: '✓';
+  color: var(--success-text);
+  font-weight: bold;
+  margin-right: 8px;
+}
+
+@media (max-width: 768px) {
+  .subscriptionDetails {
+    grid-template-columns: 1fr;
+  }
+  
+  .subscriptionActions {
+    flex-direction: column;
+  }
+  
+  .proPlans {
+    grid-template-columns: 1fr;
+  }
+  
+  .subscriptionHeader {
+    flex-direction: column;
+    text-align: center;
+    gap: 12px;
+  }
+  
+  .subscriptionStatus {
+    margin-left: 0;
   }
 }

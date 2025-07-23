@@ -27,30 +27,33 @@ export default function OfferModal({ offer, isOpen, onClose }: OfferModalProps) 
   const minSwipeDistance = 50
   
   useEffect(() => {
+    console.log('🔍 OfferModal: Sprawdzam aktualnego użytkownika...')
     // Pobierz informacje o aktualnie zalogowanym użytkowniku
     fetch('/api/auth/me')
-      .then(response => response.json())
+      .then(response => {
+        console.log('📥 /api/auth/me response status:', response.status)
+        return response.json()
+      })
       .then(data => {
-        console.log('API /api/auth/me response:', data)
+        console.log('👤 API /api/auth/me response:', data)
         if (data.user) {
           setCurrentUser(data.user)
+          console.log('✅ Użytkownik zalogowany:', data.user.email)
           // Sprawdź czy już ocenił tego użytkownika dla tej oferty
           checkIfAlreadyRated(data.user.email)
+        } else {
+          console.log('❌ Użytkownik nie zalogowany')
         }
       })
-      .catch(error => console.error('Error fetching user:', error))
+      .catch(error => {
+        console.error('💥 Error fetching user:', error)
+      })
   }, [])
 
   const checkIfAlreadyRated = async (userEmail: string) => {
     try {
-      const token = document.cookie.split(';').find(row => row.startsWith('token='))?.split('=')[1]
-      
-      if (!token) return
-
       const response = await fetch(`/api/ratings/check?reviewedEmail=${offer.contactEmail}&offerId=${offer.id}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
+        credentials: 'include' // ważne dla cookies
       })
 
       if (response.ok) {
@@ -154,33 +157,42 @@ export default function OfferModal({ offer, isOpen, onClose }: OfferModalProps) 
 
   const handleChatStart = async () => {
     try {
-      const token = document.cookie.split(';').find(row => row.startsWith('token='))?.split('=')[1]
-      
-      if (!token) {
-        alert('Musisz być zalogowany aby rozpocząć chat')
-        window.location.href = '/login'
-        return
-      }
-
+      // Wyślij request - token będzie automatycznie zawarty w cookies httpOnly
       const response = await fetch('/api/auth/chats/new', {
         method: 'POST',
         headers: { 
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ withEmail: offer.contactEmail })
+        credentials: 'include', // ważne dla cookies
+        body: JSON.stringify({ 
+          withEmail: offer.ownerEmail || offer.contactEmail,
+          offerId: offer.id 
+        })
       })
       
       if (response.ok) {
         const data = await response.json()
+        console.log('✅ Chat utworzony:', data)
+        
+        // Zapisz mapowanie chatId -> offerId w localStorage dla przyszłego użycia
+        try {
+          const chatOfferMap = JSON.parse(localStorage.getItem('chatOfferMap') || '{}')
+          chatOfferMap[data.chatId] = offer.id
+          localStorage.setItem('chatOfferMap', JSON.stringify(chatOfferMap))
+          console.log('💾 Saved chat-offer mapping:', { chatId: data.chatId, offerId: offer.id })
+        } catch (error) {
+          console.error('⚠️ Failed to save chat-offer mapping:', error)
+        }
+        
         // Przekieruj do profilu z otwartym chatem
-        window.location.href = `/profile?tab=chat&chatId=${data.chatId}`
+        window.location.href = `/profile?tab=chat&chatId=${data.chatId}&offerId=${offer.id}`
       } else {
         const error = await response.json()
+        console.log('❌ Błąd API:', error)
         alert(error.error || 'Błąd podczas rozpoczynania chatu')
       }
     } catch (error) {
-      console.error('Error starting chat:', error)
+      console.error('💥 Wyjątek podczas tworzenia czatu:', error)
       alert('Błąd podczas rozpoczynania chatu')
     }
   }
@@ -188,20 +200,12 @@ export default function OfferModal({ offer, isOpen, onClose }: OfferModalProps) 
   const handlePromoteOffer = async () => {
     setPromoting(true)
     try {
-      const token = document.cookie.split(';').find(row => row.startsWith('token='))?.split('=')[1]
-      
-      if (!token) {
-        alert('Musisz być zalogowany aby promować ofertę')
-        window.location.href = '/login'
-        return
-      }
-
       const response = await fetch('/api/offers/promote', {
         method: 'POST',
         headers: { 
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Content-Type': 'application/json'
         },
+        credentials: 'include', // ważne dla cookies
         body: JSON.stringify({ offerId: offer.id })
       })
       
@@ -421,7 +425,9 @@ export default function OfferModal({ offer, isOpen, onClose }: OfferModalProps) 
                 <div className={styles.contactIcon}>👤</div>
                 <div className={styles.contactContent}>
                   <span className={styles.contactLabel}>Imię</span>
-                  <span className={styles.contactValue}>{offer.contactName}</span>
+                  <span className={styles.contactValue}>
+                    {offer.ownerName || offer.owner?.name || offer.contactName}
+                  </span>
                 </div>
                 <div className={styles.viewProfileHint}>
                   <span>👁️ Zobacz profil</span>
@@ -444,11 +450,6 @@ export default function OfferModal({ offer, isOpen, onClose }: OfferModalProps) 
                 </div>
               )}
             </div>
-          </div>
-
-          {/* Reklama w modalu */}
-          <div className={styles.adSection}>
-            <Advertisement type="offer" />
           </div>
 
           {/* Akcje */}

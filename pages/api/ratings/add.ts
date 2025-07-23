@@ -12,6 +12,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     
     const token = req.headers.authorization?.replace('Bearer ', '') || req.cookies.token
     console.log('Token found:', !!token)
+    console.log('Token source:', req.headers.authorization ? 'header' : 'cookie')
+    console.log('Token length:', token?.length)
+    console.log('Token first 20 chars:', token?.substring(0, 20))
     
     if (!token) {
       return res.status(401).json({ message: 'Nie jesteś zalogowany' })
@@ -44,18 +47,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(404).json({ message: 'Użytkownik nie znaleziony' })
     }
 
-    if (reviewer.id === reviewed.id) {
+    // W trybie deweloperskim pozwalamy na samo-ocenianie dla testów
+    const isDevelopment = process.env.NODE_ENV === 'development'
+    if (!isDevelopment && reviewer.id === reviewed.id) {
       return res.status(400).json({ message: 'Nie możesz ocenić samego siebie' })
+    }
+    
+    // W trybie deweloperskim dodaj informację
+    if (isDevelopment && reviewer.id === reviewed.id) {
+      console.log('⚠️ TRYB DEWELOPERSKI: Pozwalanie na samo-ocenianie dla testów')
     }
 
     // Sprawdź czy już ocenił dla tej oferty
-    const existingRating = await prisma.rating.findUnique({
+    const existingRating = await prisma.rating.findFirst({
       where: {
-        reviewerId_reviewedId_offerId: {
-          reviewerId: reviewer.id,
-          reviewedId: reviewed.id,
-          offerId: offerId || null
-        }
+        reviewerId: reviewer.id,
+        reviewedId: reviewed.id,
+        offerId: offerId || null
       }
     })
 

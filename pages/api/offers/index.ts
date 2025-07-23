@@ -8,6 +8,21 @@ export default async function handler(
   res: NextApiResponse
 ) {
   if (req.method === 'GET') {
+    // Automatycznie wyczyść wygasłe promocje
+    const now = new Date()
+    await prisma.offer.updateMany({
+      where: {
+        promoted: true,
+        promotedUntil: {
+          lt: now
+        }
+      },
+      data: {
+        promoted: false,
+        promotedUntil: null
+      }
+    })
+    
     const { 
       maxPrice, 
       minPrice, 
@@ -55,8 +70,7 @@ export default async function handler(
         // Tylko województwo - szukaj po nazwie województwa i wszystkich miastach z tego województwa
         locationConditions.push({ 
           location: { 
-            contains: province as string,
-            mode: 'insensitive'
+            contains: province as string
           } 
         })
         
@@ -64,8 +78,7 @@ export default async function handler(
         miasta.forEach(miasto => {
           locationConditions.push({ 
             location: { 
-              contains: miasto,
-              mode: 'insensitive'
+              contains: miasto
             } 
           })
           
@@ -74,8 +87,7 @@ export default async function handler(
           alternatywy.forEach(alt => {
             locationConditions.push({ 
               location: { 
-                contains: alt,
-                mode: 'insensitive'
+                contains: alt
               } 
             })
           })
@@ -87,8 +99,7 @@ export default async function handler(
         searchTerms.forEach(term => {
           locationConditions.push({ 
             location: { 
-              contains: term,
-              mode: 'insensitive'
+              contains: term
             } 
           })
         })
@@ -107,16 +118,14 @@ export default async function handler(
         if (cityInProvince) {
           locationConditions.push({ 
             location: { 
-              contains: city as string,
-              mode: 'insensitive'
+              contains: city as string
             } 
           })
           
           if (normalizedCity !== city) {
             locationConditions.push({ 
               location: { 
-                contains: normalizedCity,
-                mode: 'insensitive'
+                contains: normalizedCity
               } 
             })
           }
@@ -207,6 +216,13 @@ export default async function handler(
         include: {
           images: {
             orderBy: { id: 'asc' }
+          },
+          owner: {
+            select: {
+              id: true,
+              email: true,
+              name: true
+            }
           }
         }
       }),
@@ -214,9 +230,10 @@ export default async function handler(
     ])
     
     // Mapuj oferety z obrazami i statusem promocji
-    const now = new Date()
     const offersWithImages = offers.map(offer => ({
       ...offer,
+      ownerEmail: offer.owner.email, // Dodaj ownerEmail dla kompatybilności
+      ownerName: offer.owner.name,
       image: offer.images.length > 0 ? offer.images[0].url : '/house4k.jpg', // pierwsza dla kompatybilności
       images: offer.images.map(img => img.url), // wszystkie zdjęcia jako tablica
       isPromoted: offer.promoted && offer.promotedUntil && offer.promotedUntil > now // sprawdź czy promocja jest aktywna

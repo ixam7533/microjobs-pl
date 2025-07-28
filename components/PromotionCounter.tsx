@@ -69,10 +69,9 @@ export default function PromotionCounter({ className }: PromotionCounterProps) {
 
   // Zabezpieczamy się przed nieprawidłowymi danymi
   const isProPlus = promotionData.subscriptionType === 'PRO_PLUS'
-  const isPro = promotionData.subscriptionType === 'PRO'
   
-  // Używamy limitu z API - tam już jest prawidłowa logika
-  const promoLimit = promotionData.promotionsLimit || 0
+  // PRO+ użytkownicy mają limit 3 promocji zamiast nieograniczonej ilości
+  const promoLimit = isProPlus ? 3 : (promotionData.promotionsLimit || 0)
   const promotionsUsed = promotionData.promotionsUsed || 0
   const remaining = Math.max(0, promoLimit - promotionsUsed)
   
@@ -80,7 +79,6 @@ export default function PromotionCounter({ className }: PromotionCounterProps) {
     remaining, 
     limit: promoLimit,
     isProPlus,
-    isPro,
     type: promotionData.subscriptionType 
   })
 

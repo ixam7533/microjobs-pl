@@ -5,10 +5,14 @@ import { CATEGORIES } from '../../lib/pricing'
 import { wojewodztwa, getMiastaForWojewodztwo } from '../../lib/locations'
 import styles from '../../components/AddOfferForm.module.css'
 
+interface OfferForm {
+  [key: string]: any;
+}
+
 export default function EditOffer() {
   const router = useRouter()
   const { id } = router.query
-  const [form, setForm] = useState<any>(null)
+  const [form, setForm] = useState<OfferForm | null>(null)
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {

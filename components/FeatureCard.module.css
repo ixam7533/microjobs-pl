@@ -194,3 +194,38 @@
   border-color: rgba(255, 255, 255, 0.3);
   transform: translateY(-1px);
 }
+
+/* Statystyki */
+.stats {
+  display: flex;
+  gap: 12px;
+  margin-top: 6px;
+  margin-bottom: 4px;
+}
+
+.stat {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.7rem;
+}
+
+.statIcon {
+  font-size: 0.65rem;
+  opacity: 0.8;
+}
+
+@media (max-width: 768px) {
+  .stats {
+    gap: 8px;
+  }
+  
+  .stat {
+    font-size: 0.65rem;
+  }
+  
+  .statIcon {
+    font-size: 0.6rem;
+  }
+}

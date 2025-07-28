@@ -67,7 +67,7 @@ export default function PublishWithPromo1Direct({ offerData, onSuccess }: Publis
         
         window.ShopifyBuy.UI.onReady(client).then((ui: any) => {
           ui.createComponent('product', {
-          id: '9714008555862',
+            id: '9714008555862',
             node: containerRef.current,
             moneyFormat: '%7B%7Bamount_with_comma_separator%7D%7D%20z%C5%82',
             options: {
@@ -87,12 +87,12 @@ export default function PublishWithPromo1Direct({ offerData, onSuccess }: Publis
                     "padding-bottom": "16px",
                     "color": "#ffffff !important",
                     ":hover": {
-                      "background-color": "#0d8e48",
+                      "background-color": "#a150e0",
                       "color": "#ffffff !important"
                     },
-                    "background-color": "#0e9e50",
+                    "background-color": "#b359f9",
                     ":focus": {
-                      "background-color": "#0d8e48",
+                      "background-color": "#a150e0",
                       "color": "#ffffff !important"
                     },
                     "border-radius": "10px",
@@ -146,12 +146,12 @@ export default function PublishWithPromo1Direct({ offerData, onSuccess }: Publis
                     "padding-bottom": "16px",
                     "color": "#ffffff !important",
                     ":hover": {
-                      "background-color": "#0d8e48",
+                      "background-color": "#a150e0",
                       "color": "#ffffff !important"
                     },
-                    "background-color": "#0e9e50",
+                    "background-color": "#b359f9",
                     ":focus": {
-                      "background-color": "#0d8e48",
+                      "background-color": "#a150e0",
                       "color": "#ffffff !important"
                     },
                     "border-radius": "10px",
@@ -178,12 +178,12 @@ export default function PublishWithPromo1Direct({ offerData, onSuccess }: Publis
                     "padding-bottom": "16px",
                     "color": "#ffffff !important",
                     ":hover": {
-                      "background-color": "#0d8e48",
+                      "background-color": "#a150e0",
                       "color": "#ffffff !important"
                     },
-                    "background-color": "#0e9e50",
+                    "background-color": "#b359f9",
                     ":focus": {
-                      "background-color": "#0d8e48",
+                      "background-color": "#a150e0",
                       "color": "#ffffff !important"
                     },
                     "border-radius": "10px"
@@ -198,12 +198,12 @@ export default function PublishWithPromo1Direct({ offerData, onSuccess }: Publis
                 "styles": {
                   "toggle": {
                     "font-weight": "bold",
-                    "background-color": "#0e9e50",
+                    "background-color": "#b359f9",
                     ":hover": {
-                      "background-color": "#0d8e48"
+                      "background-color": "#a150e0"
                     },
                     ":focus": {
-                      "background-color": "#0d8e48"
+                      "background-color": "#a150e0"
                     }
                   },
                   "count": {

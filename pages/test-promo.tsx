@@ -8,9 +8,9 @@ export default function TestPromo() {
   const [testPrice, setTestPrice] = useState(50)
 
   const getPromoButton = (price: number) => {
-    if (price >= 0 && price <= 100) {
+    if (price >= 0 && price <= 60) {
       return <PromoButton1 />
-    } else if (price >= 101 && price <= 200) {
+    } else if (price >= 61 && price <= 200) {
       return <PromoButton2 />
     } else if (price >= 201 && price <= 1000) {
       return <PromoButton3 />
@@ -19,10 +19,10 @@ export default function TestPromo() {
   }
 
   const getPromoPrice = (price: number) => {
-    if (price >= 0 && price <= 100) {
+    if (price >= 0 && price <= 60) {
       return 4.00
-    } else if (price >= 101 && price <= 200) {
-      return 10.99
+    } else if (price >= 61 && price <= 200) {
+      return 9.99
     } else if (price >= 201 && price <= 1000) {
       return 15.00
     }

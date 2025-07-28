@@ -6,10 +6,12 @@ import styles from './Header.module.css'
 import ThemeSwitch from './ThemeSwitch'
 import PromotionCounter from './PromotionCounter'
 import ChatNotificationBadge from './ChatNotificationBadge'
+import AdminSubscriptionPanel from './AdminSubscriptionPanel'
 
 interface User {
   email: string
   confirmed: boolean
+  isAdmin?: boolean
 }
 
 type Theme = 'dark' | 'light' | 'night'
@@ -17,6 +19,7 @@ type Theme = 'dark' | 'light' | 'night'
 export default function Header() {
   const [user, setUser] = useState<User | null>(null)
   const [currentTheme, setCurrentTheme] = useState<Theme>('dark')
+  const [showAdminPanel, setShowAdminPanel] = useState(false)
   const router = useRouter()
 
   useEffect(() => {
@@ -136,6 +139,18 @@ export default function Header() {
               <Link href="/add-new" className={styles.btn}>
                 Dodaj ogłoszenie
               </Link>
+              
+              {/* Przycisk panelu admina - tylko dla adminów */}
+              {(user.isAdmin || user.email === 'microjobsj7@gmail.com') && (
+                <button 
+                  onClick={() => setShowAdminPanel(true)}
+                  className={`${styles.btn} ${styles.adminBtn}`}
+                  title="Panel Administratora"
+                >
+                  👑 Admin
+                </button>
+              )}
+              
               <ChatNotificationBadge>
                 <Link href="/profile" className={styles.btn}>
                   Mój profil
@@ -168,6 +183,12 @@ export default function Header() {
           />
         </svg>
       </div>
+
+      {/* Panel administracyjny */}
+      <AdminSubscriptionPanel 
+        isVisible={showAdminPanel}
+        onClose={() => setShowAdminPanel(false)}
+      />
     </header>
   )
 }

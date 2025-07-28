@@ -1,8 +1,23 @@
 import styles from './OfferModal.module.css'
 import { useEffect, useState } from 'react'
 
+interface Offer {
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  location: string;
+  price: number;
+  images?: string[];
+  author?: {
+    name?: string;
+    email?: string;
+  };
+  [key: string]: any;
+}
+
 interface OfferModalProps {
-  offer: any
+  offer: Offer
   isOpen: boolean
   onClose: () => void
 }

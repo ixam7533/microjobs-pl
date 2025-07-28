@@ -70,9 +70,7 @@ export default function AccountSettings({ user }: AccountSettingsProps) {
     }
 
     try {
-      const token = document.cookie.split(';').find(row => row.trim().startsWith('token='))?.split('=')[1]
-      console.log('Token found:', token ? 'Yes' : 'No')
-      
+      const token = document.cookie.split(';').find(row => row.startsWith('token='))?.split('=')[1]
       const response = await fetch('/api/auth/change-password', {
         method: 'POST',
         headers: {
@@ -86,8 +84,6 @@ export default function AccountSettings({ user }: AccountSettingsProps) {
       })
 
       const data = await response.json()
-      console.log('Response status:', response.status)
-      console.log('Response data:', data)
 
       if (response.ok) {
         setMessage({ type: 'success', text: 'Hasło zostało zmienione' })
@@ -97,10 +93,9 @@ export default function AccountSettings({ user }: AccountSettingsProps) {
           confirmPassword: ''
         })
       } else {
-        setMessage({ type: 'error', text: data.message || data.error || 'Błąd podczas zmiany hasła' })
+        setMessage({ type: 'error', text: data.error || 'Błąd podczas zmiany hasła' })
       }
     } catch (error) {
-      console.error('Error changing password:', error)
       setMessage({ type: 'error', text: 'Błąd podczas zmiany hasła' })
     }
 

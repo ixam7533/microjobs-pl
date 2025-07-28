@@ -17,9 +17,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(401).json({ error: 'Token required' })
     }
 
-    const decoded = verifyToken(token) as any
+    const decoded = verifyToken(token) as { id: string; email: string }
     
-    if (!decoded || !decoded.id) {
+    if (!decoded || !parseInt(decoded.id)) {
       return res.status(401).json({ error: 'Invalid token' })
     }
 
@@ -30,23 +30,50 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     const user = await prisma.user.findUnique({
-      where: { id: decoded.id }
+      where: { id: parseInt(decoded.id) },
+      include: {
+        subscriptions: {
+          where: { 
+            OR: [
+              { status: 'ACTIVE' },
+              { status: 'CANCELLED' }
+            ]
+          },
+          orderBy: { createdAt: 'desc' },
+          take: 1
+        }
+      }
     })
 
     if (!user) {
       return res.status(404).json({ error: 'User not found' })
     }
 
-    // Check if user already has active subscription
+    // Sprawdź czy ma aktywną nie-anulowaną subskrypcję
     const now = new Date()
-    if (user.subscriptionEnd && user.subscriptionEnd > now) {
-      return res.status(400).json({ error: 'You already have an active subscription' })
+    const hasActiveSubscription = user.subscriptionEnd && user.subscriptionEnd > now
+    const latestSubscription = user.subscriptions[0]
+    const hasActivePaidSubscription = hasActiveSubscription && latestSubscription?.status === 'ACTIVE'
+    
+    if (hasActivePaidSubscription) {
+      return res.status(400).json({ error: 'You already have an active subscription. Cancel it first or wait for it to expire.' })
     }
 
     const subscriptionData = PRO_VERSIONS[subscriptionType as keyof typeof PRO_VERSIONS]
     const startDate = new Date()
     const endDate = new Date(startDate)
     endDate.setMonth(endDate.getMonth() + 1) // 1 month subscription
+
+    // Jeśli była anulowana subskrypcja, zakończ ją natychmiast
+    if (latestSubscription && latestSubscription.status === 'CANCELLED') {
+      await prisma.subscription.update({
+        where: { id: latestSubscription.id },
+        data: { 
+          status: 'EXPIRED',
+          endDate: startDate // Zakończ natychmiast
+        }
+      })
+    }
 
     // Ustaw prawidłowy limit promocji
     let promotionsLimit = 0
@@ -58,27 +85,27 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // Update user with subscription
     await prisma.user.update({
-      where: { id: decoded.id },
+      where: { id: parseInt(decoded.id) },
       data: {
         subscriptionType,
         subscriptionStart: startDate,
         subscriptionEnd: endDate,
         promotionsUsed: 0,
         promotionsLimit: promotionsLimit,
-        subscriptionId: `sub_${Date.now()}_${decoded.id}` // Mock payment ID
+        subscriptionId: `sub_${Date.now()}_${parseInt(decoded.id)}` // Mock payment ID
       }
     })
 
     // Create subscription record
     await prisma.subscription.create({
       data: {
-        userId: decoded.id,
+        userId: parseInt(decoded.id),
         type: subscriptionType,
         status: 'ACTIVE',
         startDate,
         endDate,
         autoRenew: true,
-        paymentId: `pay_${Date.now()}_${decoded.id}`
+        paymentId: `pay_${Date.now()}_${parseInt(decoded.id)}`
       }
     })
 

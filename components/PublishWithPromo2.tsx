@@ -1,4 +1,4 @@
-// components/PublishWithPromo2.tsx - Publikuj + Promuj (101-200zł) za 16.99zł
+// components/PublishWithPromo2.tsx - Publikuj + Promuj (101-300zł) za 15.99zł
 import { useEffect, useRef } from 'react'
 
 declare global {
@@ -64,12 +64,12 @@ export default function PublishWithPromo2() {
                     "padding-bottom": "16px",
                     "color": "#ffffff !important",
                     ":hover": {
-                      "background-color": "#0d8e48",
+                      "background-color": "#a150e0",
                       "color": "#ffffff !important"
                     },
-                    "background-color": "#0e9e50",
+                    "background-color": "#b359f9",
                     ":focus": {
-                      "background-color": "#0d8e48",
+                      "background-color": "#a150e0",
                       "color": "#ffffff !important"
                     },
                     "border-radius": "10px",
@@ -122,11 +122,11 @@ export default function PublishWithPromo2() {
                     "padding-top": "16px",
                     "padding-bottom": "16px",
                     ":hover": {
-                      "background-color": "#0d8e48"
+                      "background-color": "#a150e0"
                     },
-                    "background-color": "#0e9e50",
+                    "background-color": "#b359f9",
                     ":focus": {
-                      "background-color": "#0d8e48"
+                      "background-color": "#a150e0"
                     },
                     "border-radius": "10px",
                     "padding-left": "90px",
@@ -151,11 +151,11 @@ export default function PublishWithPromo2() {
                     "padding-top": "16px",
                     "padding-bottom": "16px",
                     ":hover": {
-                      "background-color": "#0d8e48"
+                      "background-color": "#a150e0"
                     },
-                    "background-color": "#0e9e50",
+                    "background-color": "#b359f9",
                     ":focus": {
-                      "background-color": "#0d8e48"
+                      "background-color": "#a150e0"
                     },
                     "border-radius": "10px"
                   }
@@ -169,12 +169,12 @@ export default function PublishWithPromo2() {
                 styles: {
                   toggle: {
                     "font-weight": "bold",
-                    "background-color": "#0e9e50",
+                    "background-color": "#b359f9",
                     ":hover": {
-                      "background-color": "#0d8e48"
+                      "background-color": "#a150e0"
                     },
                     ":focus": {
-                      "background-color": "#0d8e48"
+                      "background-color": "#a150e0"
                     }
                   },
                   count: {

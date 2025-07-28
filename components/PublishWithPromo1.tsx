@@ -44,7 +44,7 @@ export default function PublishWithPromo1() {
         
         window.ShopifyBuy.UI.onReady(client).then((ui: any) => {
           ui.createComponent('product', {
-            id: '9717509292374',
+            id: '9714008555862',
             node: document.getElementById('product-component-publish-promo-1'),
             moneyFormat: '%7B%7Bamount_with_comma_separator%7D%7D%20z%C5%82',
             options: {
@@ -63,11 +63,11 @@ export default function PublishWithPromo1() {
                     "padding-top": "16px",
                     "padding-bottom": "16px",
                     ":hover": {
-                      "background-color": "#0d8e48"
+                      "background-color": "#a150e0"
                     },
-                    "background-color": "#0e9e50",
+                    "background-color": "#b359f9",
                     ":focus": {
-                      "background-color": "#0d8e48"
+                      "background-color": "#a150e0"
                     },
                     "border-radius": "10px",
                     "padding-left": "90px",
@@ -119,11 +119,11 @@ export default function PublishWithPromo1() {
                     "padding-top": "16px",
                     "padding-bottom": "16px",
                     ":hover": {
-                      "background-color": "#0d8e48"
+                      "background-color": "#a150e0"
                     },
-                    "background-color": "#0e9e50",
+                    "background-color": "#b359f9",
                     ":focus": {
-                      "background-color": "#0d8e48"
+                      "background-color": "#a150e0"
                     },
                     "border-radius": "10px",
                     "padding-left": "90px",
@@ -148,11 +148,11 @@ export default function PublishWithPromo1() {
                     "padding-top": "16px",
                     "padding-bottom": "16px",
                     ":hover": {
-                      "background-color": "#0d8e48"
+                      "background-color": "#a150e0"
                     },
-                    "background-color": "#0e9e50",
+                    "background-color": "#b359f9",
                     ":focus": {
-                      "background-color": "#0d8e48"
+                      "background-color": "#a150e0"
                     },
                     "border-radius": "10px"
                   }
@@ -166,12 +166,12 @@ export default function PublishWithPromo1() {
                 styles: {
                   toggle: {
                     "font-weight": "bold",
-                    "background-color": "#0e9e50",
+                    "background-color": "#b359f9",
                     ":hover": {
-                      "background-color": "#0d8e48"
+                      "background-color": "#a150e0"
                     },
                     ":focus": {
-                      "background-color": "#0d8e48"
+                      "background-color": "#a150e0"
                     }
                   },
                   count: {

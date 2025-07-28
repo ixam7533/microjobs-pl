@@ -5,6 +5,7 @@ import styles from './SubscriptionManager.module.css'
 
 interface SubscriptionData {
   isActive: boolean
+  isCancelled?: boolean
   type: string | null
   startDate: string | null
   endDate: string | null
@@ -45,37 +46,6 @@ export default function SubscriptionManager({ onSubscriptionChange }: Subscripti
     }
   }
 
-  const handlePurchase = async (subscriptionType: string) => {
-    setPurchasing(true)
-    try {
-      const response = await fetch('/api/subscriptions/purchase', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        credentials: 'include',
-        body: JSON.stringify({ subscriptionType })
-      })
-
-      if (response.ok) {
-        const data = await response.json()
-        alert('Subskrypcja została zakupiona pomyślnie!')
-        await fetchSubscriptionStatus()
-        if (onSubscriptionChange) onSubscriptionChange()
-        // Reload page to remove ads
-        window.location.reload()
-      } else {
-        const error = await response.json()
-        alert(error.error || 'Błąd podczas zakupu subskrypcji')
-      }
-    } catch (error) {
-      console.error('Error purchasing subscription:', error)
-      alert('Błąd podczas zakupu subskrypcji')
-    } finally {
-      setPurchasing(false)
-    }
-  }
-
   const handleCancel = async () => {
     if (!confirm('Czy na pewno chcesz anulować subskrypcję? Zachowasz wszystkie korzyści do końca obecnego okresu rozliczeniowego.')) {
       return
@@ -90,7 +60,7 @@ export default function SubscriptionManager({ onSubscriptionChange }: Subscripti
 
       if (response.ok) {
         const data = await response.json()
-        alert(data.message)
+        // Odśwież status subskrypcji bez alertu
         await fetchSubscriptionStatus()
         if (onSubscriptionChange) onSubscriptionChange()
       } else {
@@ -120,17 +90,32 @@ export default function SubscriptionManager({ onSubscriptionChange }: Subscripti
       
       {subscription?.isActive ? (
         <div className={styles.activeSubscription}>
+          {/* Header z informacją o statusie */}
           <div className={styles.subscriptionHeader}>
             <div className={styles.subscriptionBadge}>
-              <span className={styles.badgeIcon}>✨</span>
+              <span className={styles.badgeIcon}>
+                {subscription.isCancelled ? '⏰' : '✨'}
+              </span>
               <span>{subscription.type === 'PRO' ? 'PRO' : 'PRO+'}</span>
+              {subscription.isCancelled && (
+                <span className={styles.cancelledLabel}>ANULOWANA</span>
+              )}
             </div>
             <div className={styles.subscriptionInfo}>
-              <p><strong>Subskrypcja aktywna do:</strong></p>
+              <p><strong>
+                {subscription.isCancelled ? 
+                  'Subskrypcja anulowana - aktywna do:' : 
+                  'Subskrypcja aktywna do:'}
+              </strong></p>
               <p>{subscription.endDate ? new Date(subscription.endDate).toLocaleDateString('pl-PL') : 'Nie określono'}</p>
               <p className={styles.daysRemaining}>
                 Pozostało: {subscription.daysRemaining} dni
               </p>
+              {subscription.isCancelled && (
+                <p className={styles.cancelledNote}>
+                  💡 Możesz wykupić nową subskrypcję, która zastąpi obecną i zresetuje okres na 30 dni
+                </p>
+              )}
             </div>
           </div>
 
@@ -167,13 +152,40 @@ export default function SubscriptionManager({ onSubscriptionChange }: Subscripti
           </div>
 
           <div className={styles.subscriptionActions}>
-            <button 
-              onClick={handleCancel}
-              disabled={cancelling}
-              className={styles.cancelButton}
-            >
-              {cancelling ? 'Anulowanie...' : 'Anuluj subskrypcję'}
-            </button>
+            {subscription.isCancelled ? (
+              // Sekcja dla anulowanej subskrypcji - pokaż opcje zakupu nowej
+              <div className={styles.renewOptions}>
+                <h3>Kup nową subskrypcję</h3>
+                <p className={styles.renewNote}>
+                  Nowa subskrypcja zastąpi obecną i zresetuje okres na pełne 30 dni
+                </p>
+                <div className={styles.renewButtons}>
+                  <button 
+                    onClick={() => window.location.href = '/pro'}
+                    disabled={purchasing}
+                    className={`${styles.purchaseButton} ${styles.proButton}`}
+                  >
+                    Kup PRO (15 zł)
+                  </button>
+                  <button 
+                    onClick={() => window.location.href = '/pro'}
+                    disabled={purchasing}
+                    className={`${styles.purchaseButton} ${styles.proPlusButton}`}
+                  >
+                    Kup PRO+ (25 zł)
+                  </button>
+                </div>
+              </div>
+            ) : (
+              // Przycisk anulowania dla aktywnej subskrypcji
+              <button 
+                onClick={handleCancel}
+                disabled={cancelling}
+                className={styles.cancelButton}
+              >
+                {cancelling ? 'Anulowanie...' : 'Anuluj subskrypcję'}
+              </button>
+            )}
           </div>
         </div>
       ) : (

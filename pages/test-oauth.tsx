@@ -2,7 +2,7 @@ import { getProviders } from 'next-auth/react'
 import { useEffect, useState } from 'react'
 
 export default function TestOAuth() {
-  const [providers, setProviders] = useState<any>(null)
+  const [providers, setProviders] = useState<Record<string, any> | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {

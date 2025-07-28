@@ -494,7 +494,7 @@
 
 /* Banner informujący o darmowym pierwszym ogłoszeniu */
 .freeOfferBanner {
-  background: linear-gradient(135deg, #e2da00, #d2cc0c);
+  background: linear-gradient(135deg, #dfdf16, #d3b804);
   color: white;
   padding: 1.5rem;
   border-radius: 12px;
@@ -747,16 +747,4 @@
   color: #ffffff;
   display: block;
   word-break: break-all;
-}
-
-/* Animacja konfetti */
-@keyframes confetti-fall {
-  0% {
-    transform: translateY(-100%) rotate(0deg);
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(100vh) rotate(360deg);
-    opacity: 0;
-  }
 }

@@ -35,16 +35,23 @@ export default function AddAdvertisementPage() {
 
   // Pobieranie danych użytkownika
   useEffect(() => {
+    console.log('🔍 add-new useEffect triggered')
     const fetchUserData = async () => {
       try {
+        console.log('🔍 Fetching user data...')
         const response = await fetch('/api/auth/me')
         const data = await response.json()
+        console.log('🔍 Response data:', data)
         if (data.user) {
           setUser(data.user)
+          console.log('🔍 User data:', data.user)
           // Sprawdź czy to pierwsze ogłoszenie - użyj dedykowanego endpointu
           const offersResponse = await fetch('/api/auth/my-offers')
           const offersData = await offersResponse.json()
-          setIsFirstOffer((offersData.offers || []).length === 0)
+          console.log('🔍 User offers:', offersData.offers)
+          const firstOfferStatus = (offersData.offers || []).length === 0
+          console.log('🔍 Is first offer:', firstOfferStatus)
+          setIsFirstOffer(firstOfferStatus)
         }
       } catch (error) {
         console.error('Błąd pobierania danych użytkownika:', error)
@@ -96,6 +103,10 @@ export default function AddAdvertisementPage() {
   }
 
   const handleSubmit = async (formData: any) => {
+    console.log('🔍 handleSubmit called with:', formData)
+    console.log('🔍 Current user:', user)
+    console.log('🔍 isFirstOffer:', isFirstOffer)
+    
     try {
       // Sprawdź czy to publikacja przez system PRO/PRO+
       if (formData.success && formData.action === 'published') {

@@ -1,4 +1,4 @@
-// components/PromoButton2.tsx - Promocja 10.99zł (101-200zł)
+// components/PromoButton2.tsx - Promocja 9.99zł (61-200zł)
 import { useEffect, useRef } from 'react'
 
 declare global {
@@ -44,7 +44,7 @@ export default function PromoButton2() {
         
         window.ShopifyBuy.UI.onReady(client).then((ui: any) => {
           ui.createComponent('product', {
-            id: '9717510537558',
+            id: '9714001707350',
             node: document.getElementById('product-component-promo-2'),
             moneyFormat: '%7B%7Bamount_with_comma_separator%7D%7D%20z%C5%82',
             options: {
@@ -86,7 +86,7 @@ export default function PromoButton2() {
                   price: false
                 },
                 text: {
-                  button: "Promuj + Publikuj za 10.99zł"
+                  button: "Promuj za 9.99zł"
                 }
               },
               productSet: {

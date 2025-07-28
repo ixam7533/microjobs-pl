@@ -40,6 +40,9 @@ model User {
   emailReminder    Boolean           @default(true)
   subscriptions    Subscription[]
   promotionUsages  PromotionUsage[]
+  
+  // Admin field
+  isAdmin          Boolean           @default(false)
 }
 
 model Account {

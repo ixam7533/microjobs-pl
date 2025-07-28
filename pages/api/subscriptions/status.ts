@@ -37,7 +37,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       where: { email: userInfo.email },
       include: {
         subscriptions: {
-          where: { status: 'ACTIVE' },
+          where: { 
+            OR: [
+              { status: 'ACTIVE' },
+              { status: 'CANCELLED' }
+            ]
+          },
           orderBy: { createdAt: 'desc' },
           take: 1
         }
@@ -50,17 +55,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const now = new Date()
     const hasActiveSubscription = user.subscriptionEnd && user.subscriptionEnd > now
-    const activeSubscription = user.subscriptions[0] // Najpewniej najnowsza aktywna subskrypcja
+    const activeSubscription = user.subscriptions[0] // Najpewniej najnowsza subskrypcja
+    const isCancelled = activeSubscription?.status === 'CANCELLED' && hasActiveSubscription
     
     // Oblicz limit promocji na podstawie typu subskrypcji
     let promotionsLimit = 0
     if (hasActiveSubscription && user.subscriptionType) {
       switch (user.subscriptionType) {
         case 'PRO':
-          promotionsLimit = 1 // 1 darmowe promowanie miesięcznie dla PRO
+          promotionsLimit = 1 // 1 promocja miesięcznie dla PRO
           break
         case 'PRO_PLUS':
-          promotionsLimit = 3 // 3 darmowe promowania miesięcznie dla PRO+
+          promotionsLimit = 3 // 3 promocje miesięcznie dla PRO+
           break
         default:
           promotionsLimit = 0
@@ -82,6 +88,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       success: true,
       subscription: {
         isActive: hasActiveSubscription,
+        isCancelled: isCancelled,
         type: user.subscriptionType,
         startDate: user.subscriptionStart,
         endDate: user.subscriptionEnd,

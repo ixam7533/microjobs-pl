@@ -53,7 +53,8 @@ export default async function handler(
         subscriptionStart: true,
         subscriptionEnd: true,
         promotionsUsed: true,
-        emailReminder: true
+        emailReminder: true,
+        isAdmin: true
       }
   })
 
@@ -83,7 +84,8 @@ export default async function handler(
           subscriptionStart: true,
           subscriptionEnd: true,
           promotionsUsed: true,
-          emailReminder: true
+          emailReminder: true,
+          isAdmin: true
         }
       })
       console.log('✅ NextAuth user created:', user.email)
@@ -107,10 +109,10 @@ export default async function handler(
   if (hasActiveSubscription && user.subscriptionType) {
     switch (user.subscriptionType) {
       case 'PRO':
-        promotionsLimit = 1 // 1 darmowe promowanie miesięcznie dla PRO
+        promotionsLimit = 1
         break
       case 'PRO_PLUS':
-        promotionsLimit = 3 // 3 darmowe promowania miesięcznie dla PRO+
+        promotionsLimit = 3
         break
       default:
         promotionsLimit = 0

@@ -66,7 +66,7 @@ export default async function handler(
           subscriptionStart: null,
           subscriptionEnd: null,
           promotionsUsed: 0,
-          promotionsLimit: 10
+          promotionsLimit: 0
         }
       })
       console.log('✅ Basic user created for chat:', other.email)

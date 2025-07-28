@@ -370,3 +370,80 @@
 .pricingCard:hover::before {
   left: 100%;
 }
+
+/* Cancelled subscription styles */
+.cancelledLabel {
+  background: #f44336;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-left: 8px;
+}
+
+.cancelledNote {
+  background: #e3f2fd;
+  color: #1565c0;
+  padding: 12px;
+  border-radius: 8px;
+  margin-top: 8px;
+  font-size: 0.9rem;
+  border-left: 4px solid #2196f3;
+}
+
+.renewOptions {
+  margin-top: 20px;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 10px;
+  border: 2px solid #e9ecef;
+}
+
+.renewOptions h3 {
+  margin: 0 0 8px 0;
+  color: #495057;
+  font-size: 1.1rem;
+}
+
+.renewNote {
+  color: #6c757d;
+  margin: 0 0 16px 0;
+  font-size: 0.9rem;
+}
+
+.renewButtons {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.proButton {
+  background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+  color: white;
+}
+
+.proButton:hover:not(:disabled) {
+  background: linear-gradient(135deg, #45a049 0%, #3e8e41 100%);
+  transform: translateY(-1px);
+}
+
+.proPlusButton {
+  background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+  color: white;
+}
+
+.proPlusButton:hover:not(:disabled) {
+  background: linear-gradient(135deg, #f57c00 0%, #ef6c00 100%);
+  transform: translateY(-1px);
+}
+
+@media (max-width: 768px) {
+  .renewButtons {
+    flex-direction: column;
+  }
+  
+  .renewButtons button {
+    width: 100%;
+  }
+}

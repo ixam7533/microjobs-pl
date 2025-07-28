@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import styles from './FeatureCard.module.css'
-import { FaHeart, FaRegHeart } from 'react-icons/fa'
+import { FaHeart, FaRegHeart, FaEye } from 'react-icons/fa'
 
 interface FeatureCardProps {
   id: number
@@ -14,6 +14,8 @@ interface FeatureCardProps {
   isFavorite?: boolean
   onFavoriteChange?: (id: number, isFavorite: boolean) => void
   isPromoted?: boolean
+  views?: number
+  likes?: number
 }
 
 export default function FeatureCard({ 
@@ -26,7 +28,9 @@ export default function FeatureCard({
   onClick, 
   isFavorite = false,
   onFavoriteChange,
-  isPromoted = false
+  isPromoted = false,
+  views = 0,
+  likes = 0
 }: FeatureCardProps) {
   const router = useRouter()
   const [fav, setFav] = useState(isFavorite)
@@ -121,6 +125,19 @@ export default function FeatureCard({
         <h3>{title}</h3>
         <div className={styles.price}>{typeof price === 'number' ? `${price} zł` : price}</div>
         <div className={styles.location}>{location}</div>
+        
+        {/* Statystyki */}
+        <div className={styles.stats}>
+          <div className={styles.stat}>
+            <FaEye className={styles.statIcon} />
+            <span>{views || 0}</span>
+          </div>
+          <div className={styles.stat}>
+            <FaHeart className={styles.statIcon} />
+            <span>{likes || 0}</span>
+          </div>
+        </div>
+        
         <div className={styles.actions}>
           <a 
             href={`/offer/${id}`}

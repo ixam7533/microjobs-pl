@@ -21,6 +21,8 @@ export type Offer = {
   offerType?: string
   createdAt?: string
   isPromoted?: boolean
+  views?: number
+  likes?: number
 }
 
 interface OffersSectionProps {
@@ -114,6 +116,8 @@ export default function OffersSection({ offers, initialOfferId }: OffersSectionP
               isFavorite={favoriteOffers.includes(o.id)}
               onFavoriteChange={handleFavoriteChange}
               isPromoted={o.isPromoted}
+              views={o.views}
+              likes={o.likes}
             />
           </React.Fragment>
         ))}

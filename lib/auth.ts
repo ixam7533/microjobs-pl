@@ -35,7 +35,7 @@ export async function getUserFromRequest(req: NextApiRequest) {
               subscriptionStart: null,
               subscriptionEnd: null,
               promotionsUsed: 0,
-              promotionsLimit: 10
+              promotionsLimit: 0
             },
             select: { id: true, email: true }
           })

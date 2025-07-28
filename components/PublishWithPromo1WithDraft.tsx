@@ -82,7 +82,7 @@ export default function PublishWithPromo1WithDraft({ offerData, onDraftSaved }: 
         
         window.ShopifyBuy.UI.onReady(client).then((ui: any) => {
           ui.createComponent('product', {
-            id: '9717509292374',
+            id: '9714008555862',
             node: containerRef.current,
             moneyFormat: '%7B%7Bamount_with_comma_separator%7D%7D%20z%C5%82',
             options: {
@@ -106,7 +106,7 @@ export default function PublishWithPromo1WithDraft({ offerData, onDraftSaved }: 
                       "color": "#ffffff",
                       "background-color": "#9c4eda"
                     },
-                    "background-color": "#0e9e50",
+                    "background-color": "#b359f9",
                     ":focus": {
                       "background-color": "#9c4eda"
                     },
@@ -136,7 +136,7 @@ export default function PublishWithPromo1WithDraft({ offerData, onDraftSaved }: 
                       "color": "#ffffff",
                       "background-color": "#9c4eda"
                     },
-                    "background-color": "#0e9e50",
+                    "background-color": "#b359f9",
                     ":focus": {
                       "background-color": "#9c4eda"
                     },
@@ -159,7 +159,7 @@ export default function PublishWithPromo1WithDraft({ offerData, onDraftSaved }: 
         type="button"
         onClick={saveDraftFirst}
         style={{
-          backgroundColor: '#0e9e50',
+          backgroundColor: '#b359f9',
           color: 'white',
           border: 'none',
           padding: '16px 24px',

@@ -75,26 +75,33 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(404).json({ success: false, error: 'User not found' })
     }
 
-    // Sprawdź czy użytkownik ma aktywną subskrypcję PRO+
+    // Sprawdź czy użytkownik ma aktywną subskrypcję PRO lub PRO+
     const now = new Date()
     const hasActiveSubscription = user.subscriptionEnd && user.subscriptionEnd > now
     
-    if (!hasActiveSubscription || user.subscriptionType !== 'PRO_PLUS') {
+    if (!hasActiveSubscription || (user.subscriptionType !== 'PRO_PLUS' && user.subscriptionType !== 'PRO')) {
       return res.status(403).json({ 
         success: false, 
-        error: 'Tylko użytkownicy PRO+ mogą korzystać z darmowych promocji' 
+        error: 'Tylko użytkownicy PRO i PRO+ mogą korzystać z darmowych promocji' 
       })
     }
 
-    // Sprawdź limit promocji dla PRO+ (3 miesięcznie)
-    if (user.promotionsUsed >= 3) {
+    // Sprawdź limit promocji
+    let promotionLimit = 0
+    if (user.subscriptionType === 'PRO_PLUS') {
+      promotionLimit = 3
+    } else if (user.subscriptionType === 'PRO') {
+      promotionLimit = 1
+    }
+
+    if (user.promotionsUsed >= promotionLimit) {
       return res.status(403).json({
         success: false,
-        error: 'Wykorzystałeś już wszystkie promocje PRO+ w tym miesiącu (3/3)'
+        error: `Wykorzystałeś już wszystkie promocje ${user.subscriptionType} w tym miesiącu (${promotionLimit}/${promotionLimit})`
       })
     }
 
-    console.log('Publikuję darmowe ogłoszenie + promocja PRO+ (limit 3/miesiąc):', {
+    console.log('Publikuję darmowe ogłoszenie + promocja:', user.subscriptionType, {
       title,
       category,
       location,

@@ -191,35 +191,5 @@ div[id*="product-component"] * {
   color: inherit;
 }
 
-/* Hide Shopify TEST badge */
-[data-shopify] .shopify-buy__badge,
-.shopify-buy__badge,
-.shopify-buy .badge,
-div[class*="badge"]:after,
-div[class*="badge"]:before,
-*[class*="test-badge"],
-*[data-test="true"],
-*[data-environment="test"],
-.shopify-buy__product .shopify-buy__product__variant-selectors + div,
-.shopify-buy__layout-vertical .shopify-buy__product-wrapper .shopify-buy__product-img-wrapper + div + div,
-iframe[src*="test"],
-iframe[src*="tb.myshopify"] {
-  display: none !important;
-  visibility: hidden !important;
-  opacity: 0 !important;
-}
-
-/* Hide any Shopify iframe with test environment */
-iframe[src*="3cusn0-tb"] {
-  display: none !important;
-}
-
-/* More specific Shopify TEST badge selectors */
-.shopify-buy__product [class*="badge"],
-.shopify-buy__product [class*="test"],
-.shopify-buy__product [data-test] {
-  display: none !important;
-}
-
 
 

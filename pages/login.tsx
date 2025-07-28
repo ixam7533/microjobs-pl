@@ -91,9 +91,6 @@ export default function Login() {
           <Link href="/register" className={styles.back}>
             ← Nie masz konta? Zarejestruj się
           </Link>
-          <Link href="/oauth-setup" className={styles.oauthSetup}>
-            ⚙️ Konfiguracja OAuth
-          </Link>
           <Link href="/" className={styles.back}>
             ← Strona główna
           </Link>

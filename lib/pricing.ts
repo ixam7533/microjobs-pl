@@ -1,7 +1,7 @@
 export const PRICING_TIERS = [
   { min: 0, max: 100, addPrice: 6.00, promoPrice: 4.00 },
-  { min: 101, max: 200, addPrice: 6.00, promoPrice: 10.99 },
-  { min: 201, max: 1000, addPrice: 6.00, promoPrice: 15.00 },
+  { min: 101, max: 300, addPrice: 6.00, promoPrice: 10.99 },
+  { min: 301, max: 1000, addPrice: 6.00, promoPrice: 15.00 },
   { min: 1001, max: Infinity, addPrice: 6.00, promoPrice: 0 } // Brak promocji dla ogłoszeń powyżej 1000zł
 ]
 

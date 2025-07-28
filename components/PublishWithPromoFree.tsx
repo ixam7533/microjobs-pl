@@ -1,4 +1,4 @@
-// components/PublishWithPromoFree.tsx - Darmowy przycisk promocji dla PRO+
+// components/PublishWithPromoFree.tsx - Darmowy przycisk promocji dla PRO i PRO+
 import { useState } from 'react'
 
 interface PublishWithPromoFreeProps {

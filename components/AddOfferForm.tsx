@@ -8,13 +8,14 @@ import PublishWithPromo1Direct from './PublishWithPromo1Direct'
 import PublishWithPromoFree from './PublishWithPromoFree'
 import PublishWithPromo2 from './PublishWithPromo2'
 import PublishWithPromo3 from './PublishWithPromo3'
-import PromoButton1 from './PromoButton1'
-import PromoButton2 from './PromoButton2'
-import PromoButton3 from './PromoButton3'
 import styles from './AddOfferForm.module.css'
 
+interface OfferData {
+  [key: string]: any; // Pozwala na wszelkie właściwości
+}
+
 interface AddOfferFormProps {
-  onSubmit: (data: any) => void
+  onSubmit: (data: OfferData) => void
   isFirstOffer?: boolean
   userHasPro?: boolean
   userProType?: 'PRO' | 'PRO_PLUS' | null
@@ -23,6 +24,12 @@ interface AddOfferFormProps {
 type OfferType = 'szukam_pracownika' | 'szukam_pracy'
 
 export default function AddOfferForm({ onSubmit, isFirstOffer = false, userHasPro = false, userProType = null }: AddOfferFormProps) {
+  console.log('🔍 AddOfferForm props:', { isFirstOffer, userHasPro, userProType })
+  
+  // Sprawdzenie czy użytkownik kwalifikuje się do darmowej publikacji
+  const qualifiesForFreePublication = isFirstOffer || userHasPro
+  console.log('🔍 qualifiesForFreePublication:', qualifiesForFreePublication)
+  
   const [step, setStep] = useState(1)
   const [offerType, setOfferType] = useState<OfferType>('szukam_pracownika')
   const [title, setTitle] = useState('')
@@ -103,9 +110,9 @@ export default function AddOfferForm({ onSubmit, isFirstOffer = false, userHasPr
     
     if (price >= 0 && price <= 100) {
       return <PublishWithPromo1Direct offerData={formData} onSuccess={handlePublishSuccess} />
-    } else if (price >= 101 && price <= 200) {
+    } else if (price >= 101 && price <= 300) {
       return <PublishWithPromo2 />
-    } else if (price >= 201 && price <= 1000) {
+    } else if (price >= 301 && price <= 1000) {
       return <PublishWithPromo3 />
     }
     return null // Powyżej 1000zł brak promocji
@@ -115,57 +122,33 @@ export default function AddOfferForm({ onSubmit, isFirstOffer = false, userHasPr
   const getPromoWithPublishPrice = (price: number) => {
     if (price >= 0 && price <= 100) {
       return 10.00 // 6zł publikacja + 4zł promocja
-    } else if (price >= 101 && price <= 200) {
+    } else if (price >= 101 && price <= 300) {
       return 16.99 // 6zł publikacja + 10.99zł promocja
-    } else if (price >= 201 && price <= 1000) {
+    } else if (price >= 301 && price <= 1000) {
       return 21.00 // 6zł publikacja + 15zł promocja
     }
     return 0 // Powyżej 1000zł brak promocji
   }
 
-  // Funkcja do określenia przycisku tylko promocji dla PRO users (bez publikacji)
-  const getPromoOnlyButton = (price: number) => {
-    if (price >= 0 && price <= 100) {
-      return <PromoButton1 />
-    } else if (price >= 101 && price <= 200) {
-      return <PromoButton2 />
-    } else if (price >= 201 && price <= 1000) {
-      return <PromoButton3 />
-    }
-    return null // Powyżej 1000zł brak promocji
-  }
-
-  // Funkcja do określenia ceny tylko promocji dla PRO users
-  const getPromoOnlyPrice = (price: number) => {
-    if (price >= 0 && price <= 100) {
-      return 4.00 // Tylko promocja
-    } else if (price >= 101 && price <= 200) {
-      return 10.99 // Tylko promocja
-    } else if (price >= 201 && price <= 1000) {
-      return 15.00 // Tylko promocja
-    }
-    return 0 // Powyżej 1000zł brak promocji
-  }
-
   useEffect(() => {
-    if (price && !isFirstOffer) {
+    if (price) {
       const priceNum = parseFloat(price) || 0
       
-      if (userHasPro) {
-        // Użytkownicy PRO i PRO+ mają darmowe ogłoszenia
+      if (qualifiesForFreePublication) {
+        // Pierwsza oferta lub użytkownicy PRO/PRO+ mają darmowe ogłoszenia
         setFees({
-          addPrice: 0, // Darmowe ogłoszenia dla PRO/PRO+
-          promoPrice: userProType === 'PRO_PLUS' ? 0 : (wantPromo ? calculateFees(priceNum, true).promoPrice : 0), // PRO+ ma darmowe promocje
-          total: userProType === 'PRO_PLUS' ? 0 : (wantPromo ? calculateFees(priceNum, true).promoPrice : 0)
+          addPrice: 0, // Darmowe ogłoszenie
+          promoPrice: (userProType === 'PRO_PLUS' || (userProType === 'PRO' && !wantPaidPromo)) ? 0 : (wantPromo ? calculateFees(priceNum, true).promoPrice : 0), // PRO+ ma darmowe promocje, PRO ma 1 darmową promocję lub płatną
+          total: (userProType === 'PRO_PLUS' || (userProType === 'PRO' && !wantPaidPromo)) ? 0 : (wantPromo ? calculateFees(priceNum, true).promoPrice : 0)
         })
       } else {
-        // Dla użytkowników bez PRO - standardowe opłaty
+        // Dla użytkowników bez PRO i nie pierwsza oferta - standardowe opłaty
         setFees(calculateFees(priceNum, wantPromo))
       }
     } else {
       setFees({ addPrice: 0, promoPrice: 0, total: 0 })
     }
-  }, [price, wantPromo, isFirstOffer, userHasPro, userProType])
+  }, [price, wantPromo, isFirstOffer, userHasPro, userProType, wantPaidPromo])
 
   // Aktualizuj lokalizację gdy zmienią się województwo/miasto/szczegóły
   useEffect(() => {
@@ -216,7 +199,7 @@ export default function AddOfferForm({ onSubmit, isFirstOffer = false, userHasPr
       contactPhone,
       images,
       wantPromo,
-      fees: userHasPro || isFirstOffer ? { addPrice: 0, promoPrice: 0, total: 0 } : fees,
+      fees: qualifiesForFreePublication ? { addPrice: 0, promoPrice: 0, total: 0 } : fees,
       userProType
     }
     onSubmit(formData)
@@ -581,54 +564,19 @@ export default function AddOfferForm({ onSubmit, isFirstOffer = false, userHasPr
         {/* Banner informujący o korzyściach PRO/PRO+ */}
         {userHasPro && (
           <div style={{
-            background: 'linear-gradient(135deg, #FFD700, #FFA500, #FF8C00)', // Złoty gradient
-            border: '2px solid #FFD700',
-            borderRadius: '12px',
+            backgroundColor: '#fff3cd',
+            border: '2px solid #ffc107',
+            borderRadius: '8px',
             padding: '15px',
-            marginBottom: '20px',
-            position: 'relative',
-            overflow: 'hidden',
-            boxShadow: '0 4px 12px rgba(255, 215, 0, 0.3)'
+            marginBottom: '20px'
           }}>
-            {/* Konfetti animacja */}
-            <div style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              background: `
-                radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.8) 2px, transparent 2px),
-                radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.8) 2px, transparent 2px),
-                radial-gradient(circle at 40% 40%, rgba(255, 215, 0, 0.8) 2px, transparent 2px),
-                radial-gradient(circle at 60% 60%, rgba(255, 165, 0, 0.8) 2px, transparent 2px),
-                radial-gradient(circle at 90% 90%, rgba(255, 255, 255, 0.8) 2px, transparent 2px),
-                radial-gradient(circle at 10% 10%, rgba(255, 215, 0, 0.8) 2px, transparent 2px)
-              `,
-              backgroundSize: '50px 50px',
-              animation: 'confetti-fall 3s infinite linear',
-              pointerEvents: 'none'
-            }}></div>
-            <h4 style={{ 
-              color: '#2c1810', 
-              margin: '0 0 10px 0', 
-              fontWeight: 'bold',
-              textShadow: '0 1px 2px rgba(255, 255, 255, 0.5)',
-              position: 'relative',
-              zIndex: 1
-            }}>
+            <h4 style={{ color: '#856404', margin: '0 0 10px 0' }}>
               🌟 Konto {userProType} - Korzyści Premium!
             </h4>
-            <p style={{ 
-              margin: '0', 
-              color: '#2c1810',
-              fontWeight: '600',
-              position: 'relative',
-              zIndex: 1
-            }}>
+            <p style={{ margin: '0', color: '#856404' }}>
               {userProType === 'PRO_PLUS' 
-                ? 'Masz darmowe publikacje i promocje! Możesz też wybrać płatną promocję jeśli nie chcesz wykorzystywać limitu.'
-                : 'Masz darmowe publikacje! Promocje są płatne lub możesz je otrzymać w ramach subskrypcji.'
+                ? 'Masz darmowe publikacje i nielimitowane darmowe promocje! Możesz też wybrać płatną promocję jeśli nie chcesz wykorzystywać limitu.'
+                : 'Masz darmowe publikacje i 1 darmową promocję miesięcznie! Możesz też wybrać płatną promocję.'
               }
             </p>
           </div>
@@ -637,15 +585,18 @@ export default function AddOfferForm({ onSubmit, isFirstOffer = false, userHasPr
         <div className={styles.publishOptions}>
           <div className={styles.optionSection}>
             <h4 className={styles.optionTitle}>
-              {userHasPro ? 'Darmowa publikacja (PRO)' : isFirstOffer ? 'Darmowa publikacja (pierwsze ogłoszenie)' : 'Zwykła publikacja'}
+              {qualifiesForFreePublication ? 
+                (isFirstOffer ? 'Darmowa publikacja (pierwsza oferta!)' : 'Darmowa publikacja (PRO)') 
+                : 'Zwykła publikacja'
+              }
             </h4>
             <div className={styles.priceInfo}>
               <span className={styles.priceAmount}>
-                {userHasPro || isFirstOffer ? 'DARMOWE' : '6 zł'}
+                {qualifiesForFreePublication ? 'DARMOWE' : '6 zł'}
               </span>
               <span className={styles.priceDescription}>Publikacja na 30 dni</span>
             </div>
-            {userHasPro || isFirstOffer ? (
+            {qualifiesForFreePublication ? (
               <PublishButtonFree offerData={getFormData()} onPublishSuccess={handlePublishSuccess} />
             ) : (
               <PublishButtonDirect offerData={getFormData()} onSuccess={handlePublishSuccess} />
@@ -668,8 +619,8 @@ export default function AddOfferForm({ onSubmit, isFirstOffer = false, userHasPr
 
               {wantPromo && (
                 <div className={styles.promoOption}>
-                  {/* Opcje promocji dla PRO+ */}
-                  {userProType === 'PRO_PLUS' && (
+                  {/* Opcje promocji dla PRO+ i PRO */}
+                  {(userProType === 'PRO_PLUS' || userProType === 'PRO') && (
                     <div style={{ marginBottom: '15px' }}>
                       <div style={{ marginBottom: '10px' }}>
                         <label style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
@@ -680,7 +631,7 @@ export default function AddOfferForm({ onSubmit, isFirstOffer = false, userHasPr
                             onChange={() => setWantPaidPromo(false)}
                           />
                           <span style={{ color: '#333', fontSize: '16px' }}>
-                            Użyj darmowej promocji (PRO+)
+                            Użyj darmowej promocji ({userProType})
                           </span>
                         </label>
                         <label style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -698,33 +649,24 @@ export default function AddOfferForm({ onSubmit, isFirstOffer = false, userHasPr
                     </div>
                   )}
 
-                  <h4 className={styles.optionTitle}>
-                    {userHasPro && wantPaidPromo ? 'Promocja (bez publikacji)' : 'Publikacja + Promocja'}
-                  </h4>
+                  <h4 className={styles.optionTitle}>Publikacja + Promocja</h4>
                   <div className={styles.priceInfo}>
                     <span className={styles.priceAmount}>
-                      {userProType === 'PRO_PLUS' && !wantPaidPromo 
+                      {(userProType === 'PRO_PLUS' || userProType === 'PRO') && !wantPaidPromo 
                         ? 'DARMOWE' 
-                        : userHasPro && wantPaidPromo
-                        ? `${getPromoOnlyPrice(priceValue)} zł`
                         : `${promoWithPublishPrice} zł`
                       }
                     </span>
                     <span className={styles.priceDescription}>
-                      {userHasPro && wantPaidPromo 
-                        ? 'Tylko promocja (publikacja jest darmowa dla PRO)'
-                        : 'Publikacja + promocja (wyświetlane wyżej w wynikach)'
-                      }
+                      Publikacja + promocja (wyświetlane wyżej w wynikach)
                     </span>
                   </div>
                   
                   {/* Przyciski promocji */}
-                  {userProType === 'PRO_PLUS' && !wantPaidPromo ? (
+                  {(userProType === 'PRO_PLUS' || userProType === 'PRO') && !wantPaidPromo ? (
                     <PublishWithPromoFree offerData={getFormData()} onPublishSuccess={handlePublishSuccess} />
                   ) : userHasPro && !wantPaidPromo ? (
                     <PublishButtonDirect offerData={getFormData()} onSuccess={handlePublishSuccess} />
-                  ) : userHasPro && wantPaidPromo ? (
-                    getPromoOnlyButton(priceValue)
                   ) : (
                     getPromoWithPublishButton(priceValue)
                   )}

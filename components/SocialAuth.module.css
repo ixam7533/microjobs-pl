@@ -8,7 +8,7 @@
   display: flex;
   align-items: center;
   margin: 20px 0;
-  color: #6b7280;
+  color: #ffffff;
   font-size: 14px;
 }
 
@@ -22,8 +22,9 @@
 
 .divider span {
   padding: 0 15px;
-  background: var(--bg-color, #ffffff);
+  background: transparent;
   font-weight: 500;
+  color: #ffffff;
 }
 
 .socialButtons {
@@ -41,10 +42,10 @@
   gap: 12px;
   width: 100%;
   height: 50px;
-  border: 2px solid #e5e7eb;
+  border: 2px solid rgba(255, 255, 255, 0.3);
   border-radius: 25px; /* Okrągły przycisk! */
-  background: #ffffff;
-  color: #374151;
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
@@ -140,7 +141,7 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
-  color: #6b7280;
+  color: #ffffff;
   font-size: 14px;
 }
 
@@ -182,12 +183,13 @@
 
 .demoText strong {
   font-size: 14px;
-  color: #374151;
+  color: #ffffff;
 }
 
 .demoText span {
   font-size: 12px;
-  color: #6b7280;
+  color: #ffffff;
+  opacity: 0.8;
 }
 
 /* Toast notification */
@@ -222,7 +224,7 @@
   align-items: center;
   padding: 15px 20px 10px;
   font-weight: 600;
-  color: #374151;
+  color: #ffffff;
 }
 
 .toastClose {
@@ -230,7 +232,8 @@
   border: none;
   font-size: 20px;
   cursor: pointer;
-  color: #6b7280;
+  color: #ffffff;
+  opacity: 0.7;
   padding: 0;
   width: 24px;
   height: 24px;
@@ -247,7 +250,8 @@
 
 .toastBody {
   padding: 0 20px 15px;
-  color: #6b7280;
+  color: #ffffff;
+  opacity: 0.9;
   font-size: 14px;
   line-height: 1.5;
 }

@@ -18,9 +18,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(401).json({ error: 'Token required' })
     }
 
-    const decoded = verifyToken(token) as any
+    const decoded = verifyToken(token) as { id: string; email: string }
     
-    if (!decoded || !decoded.id) {
+    if (!decoded || !parseInt(decoded.id)) {
       return res.status(401).json({ error: 'Invalid token' })
     }
 
@@ -35,7 +35,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     console.log('📋 Promoting offer:', offerId)
 
     const user = await prisma.user.findUnique({
-      where: { id: decoded.id }
+      where: { id: parseInt(decoded.id) }
     })
 
     if (!user) {
@@ -62,9 +62,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           return res.status(403).json({ error: 'Wykorzystałeś już wszystkie promocje PRO+ w tym miesiącu (3/3)' })
         }
       } else if (user.subscriptionType === 'PRO') {
-        // PRO ma limit 1 darmowe promowanie miesięcznie
+        // PRO ma limit 1 promocji miesięcznie
         if (user.promotionsUsed >= 1) {
-          return res.status(403).json({ error: 'Wykorzystałeś już swoją darmową promocję PRO w tym miesiącu (1/1). Możesz promować za opłatą.' })
+          return res.status(403).json({ error: 'Wykorzystałeś już wszystkie promocje PRO w tym miesiącu (1/1)' })
         }
       }
     }
@@ -79,7 +79,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(404).json({ error: 'Offer not found' })
     }
 
-    if (offer.ownerId !== decoded.id) {
+    if (offer.ownerId !== parseInt(decoded.id)) {
       return res.status(403).json({ error: 'You can only promote your own offers' })
     }
 
@@ -118,7 +118,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         // PRO użytkownicy mają limit promocji, aktualizuj licznik
         console.log('📊 PRO: Incrementing from', user.promotionsUsed, 'to', user.promotionsUsed + 1)
         await prisma.user.update({
-          where: { id: decoded.id },
+          where: { id: parseInt(decoded.id) },
           data: {
             promotionsUsed: user.promotionsUsed + 1
           }
@@ -127,7 +127,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         // PRO+ ma limit 3 promocji miesięcznie, aktualizuj licznik
         console.log('⭐ PRO_PLUS: Incrementing from', user.promotionsUsed, 'to', user.promotionsUsed + 1)
         const updatedUser = await prisma.user.update({
-          where: { id: decoded.id },
+          where: { id: parseInt(decoded.id) },
           data: {
             promotionsUsed: user.promotionsUsed + 1
           }
@@ -141,7 +141,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Create promotion usage record
     await prisma.promotionUsage.create({
       data: {
-        userId: decoded.id,
+        userId: parseInt(decoded.id),
         offerId: parseInt(offerId)
       }
     })
@@ -153,7 +153,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         // PRO+ ma limit 3 promocji miesięcznie
         promotionsRemaining = Math.max(0, 3 - (user.promotionsUsed + 1))
       } else if (user.subscriptionType === 'PRO') {
-        // PRO ma limit 1 darmowe promowanie miesięcznie
+        // PRO ma limit 1 promocji miesięcznie
         promotionsRemaining = Math.max(0, 1 - (user.promotionsUsed + 1))
       }
     }
@@ -163,7 +163,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       message: 'Offer promoted successfully',
       promotedUntil,
       promotionsRemaining,
-      paymentProcessed: !hasActiveSubscription || user.subscriptionType === 'PRO' // Info czy była płatność
+      paymentProcessed: !hasActiveSubscription // Płatność tylko gdy brak subskrypcji PRO/PRO+
     })
 
   } catch (error) {

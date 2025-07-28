@@ -23,7 +23,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     // Zweryfikuj token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as any;
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { userId?: string; id?: string; email: string };
     console.log('🔔 Decoded token:', decoded);
     
     const userId = decoded.userId || decoded.id;
@@ -34,12 +34,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(401).json({ error: 'Invalid token' });
     }
 
+    if (!userId) {
+      return res.status(400).json({ error: 'User ID not found in token' });
+    }
+
     // Znajdź wszystkie czaty użytkownika
     const chats = await prisma.chat.findMany({
       where: {
         participants: {
           some: {
-            userId: userId
+            userId: parseInt(userId)
           }
         }
       },
@@ -48,7 +52,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           where: {
             // Nieprzeczytane wiadomości to te, gdzie:
             // - użytkownik nie jest nadawcą
-            senderId: { not: userId }
+            senderId: { not: parseInt(userId) }
           },
           orderBy: { createdAt: 'desc' }
         }
@@ -56,7 +60,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
 
     // Policz wszystkie nieprzeczytane wiadomości
-    const unreadCount = chats.reduce((total: number, chat: any) => {
+    const unreadCount = chats.reduce((total: number, chat: { messages: unknown[] }) => {
       return total + chat.messages.length;
     }, 0);
 

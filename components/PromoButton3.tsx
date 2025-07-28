@@ -44,7 +44,7 @@ export default function PromoButton3() {
         
         window.ShopifyBuy.UI.onReady(client).then((ui: any) => {
           ui.createComponent('product', {
-            id: '9717511291222',
+            id: '9714016223574',
             node: document.getElementById('product-component-promo-3'),
             moneyFormat: '%7B%7Bamount_with_comma_separator%7D%7D%20z%C5%82',
             options: {
@@ -86,7 +86,7 @@ export default function PromoButton3() {
                   price: false
                 },
                 text: {
-                  button: "Promuj + Publikuj za 15zł"
+                  button: "Promuj za 15zł"
                 }
               },
               productSet: {

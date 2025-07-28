@@ -47,6 +47,38 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (!userId) {
       return res.status(401).json({ success: false, error: 'User not found' })
     }
+  // Sprawdź czy użytkownik ma PRO/PRO+ albo czy to jego pierwsza oferta
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { 
+      subscriptionType: true, 
+      subscriptionEnd: true,
+      offers: { select: { id: true } } // Pobierz istniejące oferty
+    }
+  })
+
+  if (!user) {
+    return res.status(404).json({ success: false, error: 'User not found' })
+  }
+
+  const hasActiveSubscription = user.subscriptionEnd && user.subscriptionEnd > new Date()
+  const hasProSubscription = hasActiveSubscription && (user.subscriptionType === 'PRO' || user.subscriptionType === 'PRO_PLUS')
+  const isFirstOffer = user.offers.length === 0
+
+  console.log('🔍 Free publish check:', {
+    hasProSubscription,
+    isFirstOffer,
+    offerCount: user.offers.length
+  })
+
+  // Sprawdź czy użytkownik kwalifikuje się do darmowej publikacji
+  if (!hasProSubscription && !isFirstOffer) {
+    return res.status(403).json({ 
+      success: false, 
+      error: 'Darmowa publikacja dostępna tylko dla użytkowników PRO/PRO+ lub jako pierwsza oferta' 
+    })
+  }
+
   const { 
     offerType, 
     title, 
@@ -59,7 +91,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     contactPhone 
   } = req.body
 
-  console.log('Publikuję darmowe ogłoszenie PRO/PRO+:', {
+  const publishType = isFirstOffer ? 'pierwsza oferta' : 'PRO/PRO+'
+  console.log(`Publikuję darmowe ogłoszenie (${publishType}):`, {
     title,
     category,
     location
@@ -89,7 +122,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     res.status(200).json({
       success: true,
       offerId: offer.id,
-      message: 'Ogłoszenie opublikowane za darmo (PRO)'
+      message: `Ogłoszenie opublikowane za darmo (${publishType})`
     })
 
   } catch (error) {

@@ -1,0 +1,1 @@
+"use strict";exports.id=5030,exports.ids=[5030],exports.modules={5030:(e,s,t)=>{t.d(s,{i:()=>sendNotification});var o=t(5184),i=t.n(o);let r=i().createTransport({service:"gmail",auth:{user:process.env.SMTP_USER,pass:process.env.SMTP_PASS}});async function sendNotification(e){await r.sendMail({from:process.env.SMTP_USER,to:e.to,subject:e.subject,text:e.text})}}};

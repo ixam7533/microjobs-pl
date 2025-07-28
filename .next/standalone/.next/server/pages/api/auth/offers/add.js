@@ -1,0 +1,24 @@
+"use strict";(()=>{var e={};e.id=8482,e.ids=[8482],e.modules={3524:e=>{e.exports=require("@prisma/client")},4802:e=>{e.exports=require("cookie")},9344:e=>{e.exports=require("jsonwebtoken")},614:e=>{e.exports=require("next-auth/jwt")},145:e=>{e.exports=require("next/dist/compiled/next-server/pages-api.runtime.prod.js")},5184:e=>{e.exports=require("nodemailer")},6705:e=>{e.exports=import("formidable")},7147:e=>{e.exports=require("fs")},1017:e=>{e.exports=require("path")},6391:(e,a,r)=>{r.a(e,async(e,o)=>{try{r.r(a),r.d(a,{config:()=>d,default:()=>l,routeModule:()=>p});var t=r(1802),i=r(7153),n=r(6249),s=r(8627),c=e([s]);s=(c.then?(await c)():c)[0];let l=(0,n.l)(s,"default"),d=(0,n.l)(s,"config"),p=new t.PagesAPIRouteModule({definition:{kind:i.x.PAGES_API,page:"/api/auth/offers/add",pathname:"/api/auth/offers/add",bundlePath:"",filename:""},userland:s});o()}catch(e){o(e)}})},8627:(e,a,r)=>{r.a(e,async(e,o)=>{try{r.r(a),r.d(a,{config:()=>y,default:()=>handler});var t=r(6705),i=r(7147),n=r.n(i),s=r(1017),c=r.n(s),l=r(5066),d=r(5613),p=r(5030),u=e([t]);t=(u.then?(await u)():u)[0];let y={api:{bodyParser:!1}};async function handler(e,a){if("POST"!==e.method)return a.status(405).end();let r=await (0,d.A)(e);if(!r)return a.status(401).json({error:"Zaloguj się"});try{let o=(0,t.default)({multiples:!0,uploadDir:"./public/uploads",keepExtensions:!0,maxFileSize:10485760}),i=c().join(process.cwd(),"public","uploads");n().existsSync(i)||n().mkdirSync(i,{recursive:!0}),o.parse(e,async(e,o,t)=>{if(e)return console.error("Błąd parsowania formularza:",e),a.status(500).json({error:"Błąd uploadu"});try{console.log("Otrzymane pola:",o),console.log("Otrzymane pliki:",t);let e=Array.isArray(o.title)?o.title[0]:o.title||"",s=Array.isArray(o.description)?o.description[0]:o.description||"",d=Array.isArray(o.price)?parseFloat(o.price[0]):parseFloat(o.price)||0,u=Array.isArray(o.category)?o.category[0]:o.category||"",y=Array.isArray(o.subcategories)?o.subcategories[0]:o.subcategories||"[]",m=JSON.parse(y),f=Array.isArray(o.location)?o.location[0]:o.location||"",g=Array.isArray(o.contactName)?o.contactName[0]:o.contactName||"",w=Array.isArray(o.contactEmail)?o.contactEmail[0]:o.contactEmail||"",z=Array.isArray(o.contactPhone)?o.contactPhone[0]:o.contactPhone||"",h=Array.isArray(o.offerType)?o.offerType[0]:o.offerType||"offer",k=(Array.isArray(o.wantPromo)?o.wantPromo[0]:o.wantPromo)==="true";console.log("Przetworzone dane:",{title:e,description:s,price:d,category:u,subcategories:m,location:f,contactName:g,contactEmail:w,contactPhone:z,offerType:h,wantPromo:k});let A=[];if(t.images){let e=Array.isArray(t.images)?t.images:[t.images];for(let a of e)if(a&&a.filepath)try{let e=n().readFileSync(a.filepath),r=`${Date.now()}-${a.originalFilename||"image.jpg"}`,o=c().join(i,r);n().writeFileSync(o,e),A.push(`/uploads/${r}`),n().unlinkSync(a.filepath)}catch(e){console.error("Błąd przetwarzania pliku:",e)}}console.log("Tworzenie ogłoszenia w bazie danych...");let j=!1,x=null,$=!1;if(k){let e=await l.Z.user.findUnique({where:{id:r.id}});if(e){let a=new Date,r=e.subscriptionEnd&&e.subscriptionEnd>a;r&&e.promotionsUsed<e.promotionsLimit&&(j=!0,(x=new Date).setDate(x.getDate()+7),$=!0)}}let b=await l.Z.offer.create({data:{title:e,category:u,description:`${s}
+
+Typ: ${"szukam_pracownika"===h?"Oferuję pracę":"Szukam pracy"}
+Podkategorie: ${m.join(", ")}
+Promocja: ${k?"Tak":"Nie"}`,price:d,autorenew:!0,location:f,contactName:g,contactEmail:w,contactPhone:z||null,offerType:"szukam_pracownika"===h?"szukam_pracownika":"szukam_pracy",promoted:j,promotedUntil:x,owner:{connect:{id:r.id}},images:{create:A.map(e=>({url:e}))}},include:{images:!0,owner:!0}});console.log("Ogłoszenie utworzone:",b.id),$&&(await l.Z.user.update({where:{id:r.id},data:{promotionsUsed:{increment:1}}}),await l.Z.promotionUsage.create({data:{userId:r.id,offerId:b.id}}),console.log("Licznik promocji zaktualizowany"));try{await (0,p.i)({to:"unlimitedcontentg@gmail.com",subject:`Nowe ogłoszenie #${b.id} - ${e}`,text:`
+Nowe ogłoszenie dodane przez: ${r.email}
+
+Tytuł: ${e}
+Kategoria: ${u}
+Cena: ${d} zł
+Lokalizacja: ${f}
+Typ: ${"offer"===h?"Oferuję pracę":"Szukam pracy"}
+Podkategorie: ${m.join(", ")}
+
+Opis:
+${s}
+
+Kontakt:
+Imię: ${g}
+Email: ${w}
+Telefon: ${z}
+
+Link do ogłoszenia: http://localhost:3003/#offer-${b.id}
+            `.trim()})}catch(e){console.error("Błąd wysyłania emaila:",e)}a.status(201).json({success:!0,offer:b,message:"Ogłoszenie zostało dodane pomyślnie!"})}catch(e){console.error("Błąd bazy danych:",e),a.status(500).json({error:"Błąd zapisu do bazy danych"})}})}catch(e){console.error("Błąd og\xf3lny:",e),a.status(500).json({error:"Wystąpił nieoczekiwany błąd"})}}o()}catch(e){o(e)}})}};var a=require("../../../../webpack-api-runtime.js");a.C(e);var __webpack_exec__=e=>a(a.s=e),r=a.X(0,[4222,5613,5030],()=>__webpack_exec__(6391));module.exports=r})();

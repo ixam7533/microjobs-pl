@@ -1,0 +1,10 @@
+"use strict";(()=>{var e={};e.id=6524,e.ids=[6524],e.modules={3524:e=>{e.exports=require("@prisma/client")},145:e=>{e.exports=require("next/dist/compiled/next-server/pages-api.runtime.prod.js")},5184:e=>{e.exports=require("nodemailer")},8833:(e,a,s)=>{s.r(a),s.d(a,{config:()=>w,default:()=>p,routeModule:()=>m});var t={};s.r(t),s.d(t,{default:()=>handler});var r=s(1802),i=s(7153),n=s(6249),o=s(5066),l=s(5030);let d=require("crypto");var u=s.n(d);async function handler(e,a){if("POST"!==e.method)return a.status(405).json({message:"Method not allowed"});try{let{email:s}=e.body;if(!s)return a.status(400).json({message:"Email jest wymagany"});let t=await o.Z.user.findUnique({where:{email:s}});if(!t)return a.status(200).json({message:"Jeśli email istnieje w naszej bazie, zostanie wysłany link resetujący hasło"});let r=u().randomBytes(32).toString("hex"),i=`${process.env.NEXT_PUBLIC_BASE_URL||"http://localhost:3000"}/reset-password?token=${r}&email=${encodeURIComponent(s)}`;try{await (0,l.i)({to:s,subject:"Resetowanie hasła - MicroJobs",text:`Resetowanie hasła
+        
+Otrzymaliśmy prośbę o zresetowanie hasła do Twojego konta.
+        
+Kliknij w poniższy link, aby zresetować hasło:
+${i}
+        
+Link jest ważny przez 1 godzinę.
+        
+Jeśli nie prosiłeś o reset hasła, zignoruj ten email.`})}catch(e){console.error("Błąd wysyłania emaila:",e)}a.status(200).json({message:"Jeśli email istnieje w naszej bazie, zostanie wysłany link resetujący hasło"})}catch(e){console.error("Błąd resetowania hasła:",e),a.status(500).json({message:"Wewnętrzny błąd serwera"})}}let p=(0,n.l)(t,"default"),w=(0,n.l)(t,"config"),m=new r.PagesAPIRouteModule({definition:{kind:i.x.PAGES_API,page:"/api/auth/reset-password",pathname:"/api/auth/reset-password",bundlePath:"",filename:""},userland:t})},5066:(e,a,s)=>{s.d(a,{Z:()=>i});var t=s(3524);let r=new t.PrismaClient,i=r}};var a=require("../../../webpack-api-runtime.js");a.C(e);var __webpack_exec__=e=>a(a.s=e),s=a.X(0,[4222,5030],()=>__webpack_exec__(8833));module.exports=s})();

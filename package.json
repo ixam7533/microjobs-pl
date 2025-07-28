@@ -35,5 +35,9 @@
     "start": "next start",
     "send-reminders": "npx ts-node scripts/send-expiry-reminders.ts",
     "cleanup-expired": "npx ts-node scripts/cleanup-expired-subscriptions.ts"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
   }
 }

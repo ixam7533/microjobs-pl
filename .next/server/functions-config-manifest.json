@@ -1,1 +1,1 @@
-{"version":1,"functions":{"/api/auth/[...nextauth]":{},"/api/auth/offers/add":{},"/api/chats/[id]/upload":{},"/test-oauth":{}}}
+{"version":1,"functions":{"/api/auth/offers/add":{},"/api/auth/[...nextauth]":{},"/api/chats/[id]/upload":{},"/test-oauth":{}}}
